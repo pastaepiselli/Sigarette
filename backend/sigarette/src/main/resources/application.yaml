@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: sigarette
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sigarette
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
