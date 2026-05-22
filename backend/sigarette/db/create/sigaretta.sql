@@ -7,5 +7,5 @@ create table sigaretta (
     tipo varchar(20) not null,
     descrizione varchar(255) not null,
     url_immagine varchar(500) not null
-    );
+);
 
