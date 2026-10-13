@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "api/v1/review")
 public class ReviewController {
@@ -36,6 +38,17 @@ public class ReviewController {
     public ResponseEntity<ReviewResponseDTO> deleteReview(@PathVariable Long id){
         reviewService.deleteReview(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get all reviews of a cigarette
+     * @param idCigarette
+     * @return list of reviews
+     */
+    @GetMapping(path = "/cigarette/{idCigarette}")
+    public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsFromCig(@PathVariable Long idCigarette){
+        List<ReviewResponseDTO> reviews = reviewService.getAllReviewsFromCig(idCigarette);
+        return ResponseEntity.ok(reviews);
     }
 
 }

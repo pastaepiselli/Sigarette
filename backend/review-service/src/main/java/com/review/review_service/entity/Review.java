@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Table(name = "review",schema = "reviews")
+@Table(name = "review")
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,7 +21,7 @@ public class Review {
     @Column(name = "id_user")
     private Long idUser;
 
-    @Column(name = "id")
+    @Column(name = "id_cigarette")
     private Long idCigarette;
 
     @Column(name = "rating")

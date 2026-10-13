@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -46,6 +47,12 @@ public class ReviewService {
                 () -> new IllegalArgumentException("Review with id: " + id + " not found")
         );
         reviewRepository.delete(review);
+    }
+
+    public List<ReviewResponseDTO> getAllReviewsFromCig(Long idCigarette){
+        return reviewRepository.findAllByIdCigarette(idCigarette).stream()
+                .map(ReviewMapper::mapToDTO)
+                .toList();
     }
 
 

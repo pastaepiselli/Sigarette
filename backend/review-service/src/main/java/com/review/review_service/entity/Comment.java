@@ -1,13 +1,17 @@
 package com.review.review_service.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "comment", schema = "review")
+import java.time.LocalDateTime;
+
+@Table(name = "comment")
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
 
     @Id
@@ -16,8 +20,11 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "id_review", referencedColumnName = "id")
-    private Review idReview;
+    private Review Review;
 
     @Column(name = "description", nullable = false)
     private String description;
+
+    @Column(name = "dt_inserimento", nullable = false)
+    private LocalDateTime dtInserimento;
 }
