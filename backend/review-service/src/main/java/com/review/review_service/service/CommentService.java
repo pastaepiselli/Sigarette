@@ -10,6 +10,8 @@ import com.review.review_service.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class CommentService {
 
@@ -20,7 +22,7 @@ public class CommentService {
     private ReviewRepository reviewRepository;
 
     public CommentResponseDTO getCommentById(Long idReview, Long id){
-        return commentRepository.findByIdAndReview(idReview, id)
+        return commentRepository.findByIdAndReviewId(idReview, id)
                 .map(CommentMapper::mapToDTO)
                 .orElseThrow(
                         () -> new IllegalArgumentException("Comment with id: " + id + " not found")
@@ -36,5 +38,15 @@ public class CommentService {
         comment.setReview(review);
         return CommentMapper.mapToDTO(commentRepository.save(comment));
     }
+
+    public CommentResponseDTO updateComment(Long idReview, Long id, CommentRequestDTO dto){
+        Comment comment = commentRepository.findByIdAndReviewId(id, idReview).orElseThrow(
+                () -> new IllegalArgumentException("Comment con id: " + id + " non trovato")
+        );
+        comment.setDescription(dto.description());
+        comment.setDtInserimento(LocalDateTime.now());
+        return CommentMapper.mapToDTO(commentRepository.save(comment));
+    }
+
 
 }

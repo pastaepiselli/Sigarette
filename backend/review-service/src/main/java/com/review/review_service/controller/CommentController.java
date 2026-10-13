@@ -27,6 +27,13 @@ public class CommentController {
         return ResponseEntity.ok(comment);
     }
 
-    // TODO: PUT, DELETE, GET all commenti from a review
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<CommentResponseDTO> updateComment(
+            @PathVariable Long idReview,
+            @PathVariable Long id,
+            @RequestBody CommentRequestDTO dto){
+        CommentResponseDTO comment = commentService.updateComment(idReview, id, dto);
+        return ResponseEntity.ok(comment);
+    }
 
 }

@@ -12,6 +12,7 @@ public class CommentMapper {
         return new CommentResponseDTO(
                 comment.getId(),
                 ReviewMapper.mapToDTO(comment.getReview()),
+                comment.getIdUser(),
                 comment.getDescription(),
                 comment.getDtInserimento()
         );
@@ -19,6 +20,7 @@ public class CommentMapper {
 
     public static Comment mapToEntity(CommentRequestDTO dto){
         return new Comment(
+                null,
                 null,
                 null,
                 dto.description(),

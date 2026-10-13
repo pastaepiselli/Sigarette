@@ -22,6 +22,9 @@ public class Comment {
     @JoinColumn(name = "id_review", referencedColumnName = "id")
     private Review Review;
 
+    @Column(name = "id_user")
+    private Long idUser;
+
     @Column(name = "description", nullable = false)
     private String description;
 
