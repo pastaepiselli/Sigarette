@@ -4,10 +4,7 @@ import it.cigbase.sigarette.dto.CigaretteResponseDTO;
 import it.cigbase.sigarette.service.CigaretteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,4 +26,18 @@ public class CigaretteController {
         List<CigaretteResponseDTO> cigarettes = cigaretteService.getAllCigarette();
         return ResponseEntity.ok(cigarettes);
     }
+
+    /**
+     * Endpoint chiamato dal microsevizio di review quando viene aggiunta una review su una sigaretta.
+     * @param id
+     * @param rating da 0.5 a 5
+     * @return sigaretta con con avg aumentato
+     */
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<CigaretteResponseDTO> updateReviews(@PathVariable Long id, @RequestParam Float rating){
+        CigaretteResponseDTO cigarette = cigaretteService.updateAvgRating(id, rating);
+        return ResponseEntity.ok(cigarette);
+    }
+
+
 }

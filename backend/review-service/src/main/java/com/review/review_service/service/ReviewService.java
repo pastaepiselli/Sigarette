@@ -1,5 +1,6 @@
 package com.review.review_service.service;
 
+import com.review.review_service.clients.CigaretteClient;
 import com.review.review_service.dto.ReviewRequestDTO;
 import com.review.review_service.dto.ReviewResponseDTO;
 import com.review.review_service.entity.Review;
@@ -7,6 +8,7 @@ import com.review.review_service.mapper.ReviewMapper;
 import com.review.review_service.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +19,9 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private CigaretteClient cigaretteClient;
+
     public ReviewResponseDTO getReviewById(Long id){
         return  reviewRepository.findById(id)
                 .map(ReviewMapper::mapToDTO)
@@ -25,11 +30,14 @@ public class ReviewService {
                 );
     }
 
+    @Transactional
     public ReviewResponseDTO createReview(ReviewRequestDTO dto){
         Review review = reviewRepository.save(ReviewMapper.mapToEntity(dto));
+        cigaretteClient.updateAvgRating(dto.idCigarette(), dto.rating());
         return ReviewMapper.mapToDTO(review);
     }
 
+    @Transactional
     public ReviewResponseDTO updateReview(Long id, ReviewRequestDTO dto){
         Review review = reviewRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Review with id: " + id + " not found")
