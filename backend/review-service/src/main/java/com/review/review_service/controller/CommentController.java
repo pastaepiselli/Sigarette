@@ -4,6 +4,7 @@ import com.review.review_service.dto.CommentRequestDTO;
 import com.review.review_service.dto.CommentResponseDTO;
 import com.review.review_service.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,6 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
-
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<CommentResponseDTO> getCommentById(@PathVariable Long idReview, @PathVariable Long id){
@@ -34,6 +34,16 @@ public class CommentController {
             @RequestBody CommentRequestDTO dto){
         CommentResponseDTO comment = commentService.updateComment(idReview, id, dto);
         return ResponseEntity.ok(comment);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void deleteComment(
+            @PathVariable Long idReview,
+            @PathVariable Long id
+    )
+    {
+        commentService.deleteComment(idReview, id);
     }
 
 }

@@ -1,3 +1,13 @@
 spring:
   application:
     name: auth-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver

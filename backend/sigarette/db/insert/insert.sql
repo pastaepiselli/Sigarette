@@ -1,154 +1,371 @@
--- ============================================================
--- INSERT INTO sigaretta - Listino Italia (ADM, 2026)
--- url_immagine = NULL (da aggiornare)
--- nicotina e catrame in mg/sigaretta (fonte: dati emissioni ADM)
--- ============================================================
+-- Listino ADM sigarette aggiornato al 5/06/2026
+BEGIN;
 
--- MARLBORO
-INSERT INTO sigaretta VALUES (1,  'Marlboro',        6.80, 0.80, 10.0, 'tradizionale', 'La sigaretta più venduta in Italia, gusto pieno e deciso con tabacco blended americano.', NULL);
-INSERT INTO sigaretta VALUES (2,  'Marlboro',        6.80, 0.50, 6.0,  'light',        'Marlboro Gold KS, variante più leggera con tabacco blended selezionato.', NULL);
-INSERT INTO sigaretta VALUES (3,  'Marlboro',        6.80, 0.80, 10.0, 'tradizionale', 'Marlboro White KS, gusto bilanciato con filtraggio avanzato.', NULL);
-INSERT INTO sigaretta VALUES (4,  'Marlboro',        6.50, 0.30, 4.0,  'super light',  'Marlboro Touch KS, variante ultra-leggera con meno nicotina e catrame.', NULL);
-INSERT INTO sigaretta VALUES (5,  'Marlboro',        5.70, 0.50, 6.0,  'light',        'Marlboro Gold Pocket Pack, formato compatto da tasca per fumatori in movimento.', NULL);
+-- 1) Marche mancanti (brand.id non ha default: id = max esistente + progressivo)
+INSERT INTO brand (id, name)
+SELECT (SELECT COALESCE(MAX(id), 0) FROM brand) + ROW_NUMBER() OVER (ORDER BY v.name), v.name
+FROM (VALUES
+          ('821'),
+          ('ALLUVE'''),
+          ('AMERICAN SPIRIT'),
+          ('APACHE'),
+          ('AUSTIN'),
+          ('BASE'),
+          ('BENSON & HEDGES'),
+          ('BLACK DEVIL'),
+          ('BURTON'),
+          ('CAMEL'),
+          ('CHE'),
+          ('CHESTERFIELD'),
+          ('CHIARAVALLE'),
+          ('CORSET'),
+          ('COUTURE'),
+          ('DAVIDOFF'),
+          ('DIANA'),
+          ('DUCAL'),
+          ('DUNHILL'),
+          ('ELIXYR'),
+          ('EM@IL'),
+          ('ESPORTAZIONE'),
+          ('FUTURA'),
+          ('GAULOISES'),
+          ('GITANES'),
+          ('GLAMOUR'),
+          ('JPS'),
+          ('KENT'),
+          ('L&M'),
+          ('LIDO'),
+          ('LINDA'),
+          ('LUCKIES'),
+          ('LUCKY STRIKE'),
+          ('MADEMOISELLE'),
+          ('MARK ADAMS'),
+          ('MARLBORO'),
+          ('MERIT'),
+          ('MS'),
+          ('MURATTI'),
+          ('NEWS'),
+          ('NOLOGO'),
+          ('PALL MALL'),
+          ('PETER STUYVESANT'),
+          ('PHILIP MORRIS'),
+          ('PUEBLO'),
+          ('ROTHMANS'),
+          ('SIGARETTE'),
+          ('THE KING'),
+          ('TITANO'),
+          ('VOGUE'),
+          ('WEST'),
+          ('WINSTON'),
+          ('YESMOKE')
+     ) AS v(name)
+WHERE NOT EXISTS (SELECT 1 FROM brand b WHERE b.name = v.name);
 
--- PHILIP MORRIS
-INSERT INTO sigaretta VALUES (6,  'Philip Morris',   5.80, 0.80, 10.0, 'tradizionale', 'Philip Morris Filter Kings, classica sigaretta dal gusto robusto e pieno.', NULL);
-INSERT INTO sigaretta VALUES (7,  'Philip Morris',   5.80, 0.60, 8.0,  'light',        'Philip Morris Blue, versione leggera con aroma morbido e bilanciato.', NULL);
-INSERT INTO sigaretta VALUES (8,  'Philip Morris',   5.80, 0.30, 4.0,  'super light',  'Philip Morris Azure, variante super light con bassissimo contenuto di nicotina.', NULL);
-INSERT INTO sigaretta VALUES (9,  'Philip Morris',   5.50, 0.30, 4.0,  'super light',  'Philip Morris SSL Blue, formato super slim light per un fumo delicato.', NULL);
+-- 2) Sigarette
+INSERT INTO cigarette (brand_id, name, description, format, sticks_per_pack)
+SELECT b.id, v.name, v.description, v.format, v.sticks_per_pack
+FROM (VALUES
+          ('821', '821 ARGENTO', 'Codice ADM 7. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('821', '821 BLU', 'Codice ADM 66. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('821', '821 CAMOU', 'Codice ADM 3104. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('821', '821 GREEN', 'Codice ADM 20865. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('821', '821 ROSSA', 'Codice ADM 2771. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ALLUVE''', 'ALLUVE'' ORIGINAL', 'Codice ADM 3563. Prezzo di vendita 4,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ALLUVE''', 'ALLUVE'' WHITE', 'Codice ADM 3561. Prezzo di vendita 4,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('AMERICAN SPIRIT', 'AMERICAN SPIRIT ORIGINAL BLUE', 'Codice ADM 1942. Prezzo di vendita 6,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('AMERICAN SPIRIT', 'AMERICAN SPIRIT ORIGINAL ORANGE', 'Codice ADM 2231. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('AMERICAN SPIRIT', 'AMERICAN SPIRIT ORIGINAL YELLOW', 'Codice ADM 1943. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('APACHE', 'APACHE', 'Codice ADM 3912. Prezzo di vendita 4,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('APACHE', 'APACHE BLUE', 'Codice ADM 3969. Prezzo di vendita 4,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('AUSTIN', 'AUSTIN BLUE', 'Codice ADM 2179. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('AUSTIN', 'AUSTIN RED', 'Codice ADM 1586. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BASE', 'BASE BLU', 'Codice ADM 20184. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BASE', 'BASE NERA', 'Codice ADM 3910. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BASE', 'BASE ROSSA', 'Codice ADM 3885. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON & HEDGES GOLD', 'Codice ADM 550. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES BLUE', 'Codice ADM 2982. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES BLUE (cartoccio)', 'Codice ADM 3118. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES BLUE 100S', 'Codice ADM 3014. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES BLUE SUPER S', 'Codice ADM 3438. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES RED', 'Codice ADM 2981. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES RED (cartoccio)', 'Codice ADM 3117. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES RED 100S', 'Codice ADM 3013. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES WHITE', 'Codice ADM 3016. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES WHITE 100S', 'Codice ADM 3416. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES YELLOW', 'Codice ADM 3015. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES YELLOW 100S', 'Codice ADM 3415. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BENSON & HEDGES', 'BENSON&HEDGES YELLOW SUPER S', 'Codice ADM 3439. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BLACK DEVIL', 'BLACK DEVIL BLACK', 'Codice ADM 2020. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BLACK DEVIL', 'BLACK DEVIL PINK', 'Codice ADM 3185. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BLACK DEVIL', 'BLACK DEVIL YELLOW', 'Codice ADM 3350. Prezzo di vendita 4,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BURTON', 'BURTON BLUE', 'Codice ADM 20120. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('BURTON', 'BURTON ORIGINAL', 'Codice ADM 3798. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL ACTIVATE', 'Codice ADM 20225. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL BLUE', 'Codice ADM 478. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL BLUE (cartoccio)', 'Codice ADM 632. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('CAMEL', 'CAMEL BLUE 100S', 'Codice ADM 546. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL COMPACT', 'Codice ADM 20462. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL ESSENTIAL BLUE', 'Codice ADM 2240. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL ORANGE', 'Codice ADM 464. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL SENSO GOLD', 'Codice ADM 21003. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL SILVER', 'Codice ADM 552. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL WHITE', 'Codice ADM 2108. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL YELLOW', 'Codice ADM 264. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CAMEL', 'CAMEL YELLOW (cartoccio)', 'Codice ADM 270. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('CAMEL', 'CAMEL YELLOW 100S', 'Codice ADM 405. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHE', 'CHE', 'Codice ADM 2420. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHE', 'CHE BLACK', 'Codice ADM 21265. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHE', 'CHE BLUE', 'Codice ADM 20111. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHE', 'CHE ORIGINAL BLUE', 'Codice ADM 2513. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHE', 'CHE+ BLAST', 'Codice ADM 20345. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD BLUE 100', 'Codice ADM 3114. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD BLUE KS', 'Codice ADM 201. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD BLUE KS (cartoccio)', 'Codice ADM 2082. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD LABEL BLUE KS', 'Codice ADM 21419. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD LABEL ORIGINAL KS', 'Codice ADM 21420. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD ORIGINAL 100', 'Codice ADM 3113. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD ORIGINAL KS', 'Codice ADM 96. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD ORIGINAL KS (cartoccio)', 'Codice ADM 2081. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD SILVER KS', 'Codice ADM 2257. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHESTERFIELD', 'CHESTERFIELD TUNED BLUE', 'Codice ADM 20077. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHIARAVALLE', 'CHIARAVALLE BURLEY & VIRGINIA', 'Codice ADM 2680. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHIARAVALLE', 'CHIARAVALLE FIOR DI TABACCO', 'Codice ADM 20653. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHIARAVALLE', 'CHIARAVALLE GRAN RISERVA', 'Codice ADM 21119. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHIARAVALLE', 'CHIARAVALLE VIRGINIA', 'Codice ADM 2679. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CHIARAVALLE', 'CHIARAVALLE VIRGINIA BRIGHT', 'Codice ADM 2922. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET CHIC LILAC', 'Codice ADM 3437. Prezzo di vendita 4,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET CHIC PINK', 'Codice ADM 3423. Prezzo di vendita 4,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET LILAC À PORTER', 'Codice ADM 3589. Prezzo di vendita 4,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET LILAS', 'Codice ADM 2660. Prezzo di vendita 5,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET MARINE', 'Codice ADM 2661. Prezzo di vendita 5,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET MAUVE À PORTER', 'Codice ADM 3588. Prezzo di vendita 4,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET PINK', 'Codice ADM 2659. Prezzo di vendita 5,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('CORSET', 'CORSET WHITE', 'Codice ADM 20112. Prezzo di vendita 5,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('COUTURE', 'COUTURE GOLD', 'Codice ADM 3838. Prezzo di vendita 4,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('COUTURE', 'COUTURE SILVER', 'Codice ADM 3837. Prezzo di vendita 4,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DAVIDOFF', 'DAVIDOFF CLASSIC', 'Codice ADM 728. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DAVIDOFF', 'DAVIDOFF GOLD', 'Codice ADM 758. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DAVIDOFF', 'DAVIDOFF GOLD SL LINE', 'Codice ADM 583. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DIANA', 'DIANA BLU 100''s', 'Codice ADM 1983. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DIANA', 'DIANA BLU KS', 'Codice ADM 630. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DIANA', 'DIANA ROSSA 100''s', 'Codice ADM 1982. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DIANA', 'DIANA ROSSA KS', 'Codice ADM 233. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DIANA', 'DIANA SSL BLU', 'Codice ADM 913. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUCAL', 'DUCAL RED', 'Codice ADM 20876. Prezzo di vendita 4,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL BLUE', 'Codice ADM 818. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL CLUB', 'Codice ADM 231. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL CLUB BIANCA', 'Codice ADM 649. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL GOLD', 'Codice ADM 291. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL INTERNATIONAL', 'Codice ADM 549. Prezzo di vendita 7,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL MS BIANCHE', 'Codice ADM 857. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL MS BIONDE (cartoccio)', 'Codice ADM 176. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('DUNHILL', 'DUNHILL MS BIONDE', 'Codice ADM 177. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL MS BIONDE 100''S', 'Codice ADM 60. Prezzo di vendita 6,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL MS CHIARE', 'Codice ADM 851. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL MS ROSSE (cartoccio)', 'Codice ADM 852. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('DUNHILL', 'DUNHILL MS ROSSE', 'Codice ADM 993. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('DUNHILL', 'DUNHILL RED', 'Codice ADM 798. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR BLUE', 'Codice ADM 1481. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR BLUE 100''S', 'Codice ADM 1811. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR DUO', 'Codice ADM 21421. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR RED', 'Codice ADM 1480. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR RED 100''S', 'Codice ADM 1810. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR+', 'Codice ADM 1719. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR+ 100s', 'Codice ADM 3188. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR+ X-TYPE', 'Codice ADM 3945. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ELIXYR', 'ELIXYR+ X-TYPE 100S', 'Codice ADM 21110. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('EM@IL', 'EM@IL BLACK', 'Codice ADM 2404. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('EM@IL', 'EM@IL WHITE', 'Codice ADM 2412. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ESPORTAZIONE', 'ESPORTAZIONE', 'Codice ADM 627. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('FUTURA', 'FUTURA BLU', 'Codice ADM 2218. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('FUTURA', 'FUTURA CLASSICA', 'Codice ADM 604. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('FUTURA', 'FUTURA ROSSA', 'Codice ADM 2383. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GAULOISES', 'GAULOISES BLONDES BLU', 'Codice ADM 558. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GAULOISES', 'GAULOISES BLONDES BLU 100s', 'Codice ADM 21034. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GAULOISES', 'GAULOISES BLONDES ROSSA', 'Codice ADM 640. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GAULOISES', 'GAULOISES BLONDES ROSSA 100s', 'Codice ADM 21035. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GITANES', 'GITANES', 'Codice ADM 888. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GLAMOUR', 'GLAMOUR BLUES', 'Codice ADM 2217. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('GLAMOUR', 'GLAMOUR PINKS', 'Codice ADM 2216. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS BLUE', 'Codice ADM 2956. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('JPS', 'JPS BLUE STREAM', 'Codice ADM 2286. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS BLUE STREAM 100', 'Codice ADM 2288. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS DEEP BLUE', 'Codice ADM 21616. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS DEEP RED', 'Codice ADM 21615. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS ORIGINAL', 'Codice ADM 154. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS RED', 'Codice ADM 293. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS RED (cartoccio)', 'Codice ADM 2957. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('JPS', 'JPS RED 100', 'Codice ADM 2287. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS SILVER', 'Codice ADM 300. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS SILVER 100', 'Codice ADM 2883. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS SSL-LINE SILVER', 'Codice ADM 3006. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS SSL-LINE WHITE', 'Codice ADM 3007. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('JPS', 'JPS WHITE', 'Codice ADM 3941. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('KENT', 'KENT BLUE', 'Codice ADM 891. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('KENT', 'KENT SURROUND', 'Codice ADM 499. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('L&M', 'L&M BLUE LABEL KS', 'Codice ADM 1303. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('L&M', 'L&M RED LABEL KS', 'Codice ADM 1313. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LIDO', 'LIDO BLU', 'Codice ADM 87. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LINDA', 'LINDA', 'Codice ADM 488. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LINDA', 'LINDA BLU', 'Codice ADM 841. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKIES', 'LUCKIES CRAFTED 1871 BLUE', 'Codice ADM 21286. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKIES', 'LUCKIES CRAFTED 1871 RED', 'Codice ADM 21285. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE AMBER', 'Codice ADM 867. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE DEMI', 'Codice ADM 3924. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE ECLIPSE', 'Codice ADM 3947. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE NIGHT EDT', 'Codice ADM 21568. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE ORIGINAL (cartoccio)', 'Codice ADM 536. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE ORIGINAL', 'Codice ADM 451. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE ORIGINAL 100''S', 'Codice ADM 20403. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('LUCKY STRIKE', 'LUCKY STRIKE SILVER BAY', 'Codice ADM 3319. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MADEMOISELLE', 'MADEMOISELLE LA BLANCHE', 'Codice ADM 3536. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MADEMOISELLE', 'MADEMOISELLE LA BLEUE', 'Codice ADM 3365. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MADEMOISELLE', 'MADEMOISELLE LA PLUS', 'Codice ADM 20957. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MADEMOISELLE', 'MADEMOISELLE LA ROSE', 'Codice ADM 3364. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARK ADAMS', 'MARK ADAMS 1 GOLD 100', 'Codice ADM 20683. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARK ADAMS', 'MARK ADAMS 1 GOLD KS', 'Codice ADM 20700. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARK ADAMS', 'MARK ADAMS 1 RED 100', 'Codice ADM 20684. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARK ADAMS', 'MARK ADAMS 1 RED KS', 'Codice ADM 20682. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO 100S', 'Codice ADM 819. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO BLUE LINE', 'Codice ADM 3341. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO CRAFTED GOLD', 'Codice ADM 3906. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO CRAFTED GOLD 100S', 'Codice ADM 21037. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO CRAFTED GOLD KS', 'Codice ADM 406. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MARLBORO', 'MARLBORO CRAFTED RED', 'Codice ADM 3907. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO CRAFTED RED 100S', 'Codice ADM 21036. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO CRAFTED RED KS', 'Codice ADM 234. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD 100S', 'Codice ADM 651. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD KS', 'Codice ADM 9. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD KS (cartoccio)', 'Codice ADM 618. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD LINE', 'Codice ADM 3340. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD POCKET PACK', 'Codice ADM 2658. Prezzo di vendita 5,70 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD TITANIUM EDITION', 'Codice ADM 21287. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD TOUCH KS', 'Codice ADM 2214. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO GOLD TOUCH S-LINE', 'Codice ADM 21804. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO KS', 'Codice ADM 395. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO KS (cartoccio)', 'Codice ADM 396. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MARLBORO', 'MARLBORO MIX', 'Codice ADM 259. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO POCKET PACK', 'Codice ADM 3504. Prezzo di vendita 5,70 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MARLBORO', 'MARLBORO RED TITANIUM EDITION', 'Codice ADM 21288. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO RED TOUCH', 'Codice ADM 2373. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO SILVER BLUE KS', 'Codice ADM 2616. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO SILVER TOUCH S-LINE', 'Codice ADM 21803. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO TOUCH', 'Codice ADM 3422. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MARLBORO', 'MARLBORO WHITE', 'Codice ADM 2688. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT BAY KS', 'Codice ADM 2423. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT BIANCA KS', 'Codice ADM 376. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT BLU 100''S', 'Codice ADM 256. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT BLU KS', 'Codice ADM 874. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT GIALLA', 'Codice ADM 2656. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MERIT', 'MERIT GIALLA 100''S', 'Codice ADM 949. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT GIALLA KS', 'Codice ADM 997. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MERIT', 'MERIT SSL', 'Codice ADM 81. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MS', 'MS CHIARE 100''S', 'Codice ADM 827. Prezzo di vendita 6,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MS', 'MS CLASSIC', 'Codice ADM 18. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MS', 'MS NAZIONALI (cartoccio)', 'Codice ADM 629. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('MS', 'MS NAZIONALI', 'Codice ADM 686. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MURATTI', 'MURATTI AMBASSADOR AZURE KS', 'Codice ADM 574. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MURATTI', 'MURATTI AMBASSADOR BLUE KS', 'Codice ADM 560. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MURATTI', 'MURATTI AMBASSADOR SILVER KS', 'Codice ADM 876. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MURATTI', 'MURATTI AZURE 100S', 'Codice ADM 951. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('MURATTI', 'MURATTI RED 100S', 'Codice ADM 952. Prezzo di vendita 6,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('NEWS', 'NEWS RED', 'Codice ADM 1672. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('NOLOGO', 'NOLOGO ARANCIONE', 'Codice ADM 3977. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('NOLOGO', 'NOLOGO GIALLA', 'Codice ADM 3978. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('NOLOGO', 'NOLOGO VERDE', 'Codice ADM 3979. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PALL MALL', 'PALL MALL BLUE', 'Codice ADM 3936. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PALL MALL', 'PALL MALL RED', 'Codice ADM 3935. Prezzo di vendita 5,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PETER STUYVESANT', 'PETER STUYVESANT GOLD', 'Codice ADM 352. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PETER STUYVESANT', 'PETER STUYVESANT GOLD 100''S', 'Codice ADM 1788. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PETER STUYVESANT', 'PETER STUYVESANT ORIGINAL', 'Codice ADM 348. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PETER STUYVESANT', 'PETER STUYVESANT ORIGINAL 100''S', 'Codice ADM 547. Prezzo di vendita 6,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS AZURE', 'Codice ADM 2694. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS AZURE 100''S', 'Codice ADM 2816. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS BLUE', 'Codice ADM 2602. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS BLUE (cartoccio)', 'Codice ADM 3220. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS BLUE 100''S', 'Codice ADM 2815. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS FILTER KINGS', 'Codice ADM 553. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS FILTER KINGS 100’S', 'Codice ADM 3219. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS RED', 'Codice ADM 2603. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS RED (cartoccio)', 'Codice ADM 3218. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS SSL BEIGE', 'Codice ADM 3337. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS SSL BLUE', 'Codice ADM 3221. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PHILIP MORRIS', 'PHILIP MORRIS WHITE', 'Codice ADM 2695. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PUEBLO', 'PUEBLO BLUE', 'Codice ADM 2181. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PUEBLO', 'PUEBLO CLASSIC', 'Codice ADM 2099. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PUEBLO', 'PUEBLO GT', 'Codice ADM 2885. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('PUEBLO', 'PUEBLO ORANGE', 'Codice ADM 3058. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS ESSENCE BLUE 100''S', 'Codice ADM 20412. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS ESSENCE BLUE KING SIZE (cartoccio)', 'Codice ADM 3009. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('ROTHMANS', 'ROTHMANS ESSENCE BLUE KING SIZE', 'Codice ADM 3606. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS ESSENCE RED', 'Codice ADM 3008. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('ROTHMANS', 'ROTHMANS ESSENCE SILVER KING SIZE (cartoccio)', 'Codice ADM 3059. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('ROTHMANS', 'ROTHMANS ESSENCE SILVER KING SIZE', 'Codice ADM 3607. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON BLUE 100', 'Codice ADM 2879. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON BLUE 20', 'Codice ADM 2652. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON D-SERIES', 'Codice ADM 2270. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON RED 100''S', 'Codice ADM 2878. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON RED 20', 'Codice ADM 2860. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON SENSORA D- SERIES', 'Codice ADM 3503. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON SILVER 100', 'Codice ADM 2880. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON SILVER 20', 'Codice ADM 2654. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON S-SERIES BLUE', 'Codice ADM 3010. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON S-SERIES SILVER', 'Codice ADM 3011. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON S-SERIES WHITE', 'Codice ADM 20390. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON SURROUND KING SIZE', 'Codice ADM 3948. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON WHITE 100', 'Codice ADM 3662. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS OF LONDON WHITE 20''S', 'Codice ADM 3012. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS RED ESSENCE KING SIZE', 'Codice ADM 21708. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('ROTHMANS', 'ROTHMANS SPECIAL BLUE KS', 'Codice ADM 221. Prezzo di vendita 6,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('SIGARETTE', 'SIGARETTE BLU', 'Codice ADM 3533. Prezzo di vendita 4,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('SIGARETTE', 'SIGARETTE ROSSE', 'Codice ADM 3532. Prezzo di vendita 4,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING BLUE', 'Codice ADM 3183. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING BLUE 100''S', 'Codice ADM 3176. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING RED', 'Codice ADM 3184. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING RED 100''S', 'Codice ADM 3178. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING SILVER', 'Codice ADM 3534. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING SILVER 100''S', 'Codice ADM 3535. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING SSL BLUE', 'Codice ADM 3748. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING SSL STORM', 'Codice ADM 21120. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING SSL WHITE', 'Codice ADM 3747. Prezzo di vendita 5,30 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING STORM', 'Codice ADM 21259. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('THE KING', 'THE KING STORM 100''S', 'Codice ADM 3678. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('TITANO', 'TITANO', 'Codice ADM 20866. Prezzo di vendita 4,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('VOGUE', 'VOGUE BLEUE', 'Codice ADM 600. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('VOGUE', 'VOGUE CLASSIQUE LONG BLEUE', 'Codice ADM 544. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('VOGUE', 'VOGUE CLASSIQUE LONG LILAS', 'Codice ADM 868. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('VOGUE', 'VOGUE LILAS', 'Codice ADM 292. Prezzo di vendita 6,00 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WEST', 'WEST BLUE', 'Codice ADM 1635. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WEST', 'WEST BLUE 100S', 'Codice ADM 3839. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WEST', 'WEST BLUE SSL-LINE', 'Codice ADM 21033. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WEST', 'WEST ORIGINAL', 'Codice ADM 1634. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WEST', 'WEST ORIGINAL 100S', 'Codice ADM 3840. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WEST', 'WEST SILVER', 'Codice ADM 20927. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON BLUE', 'Codice ADM 338. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON BLUE (cartoccio)', 'Codice ADM 1733. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('WINSTON', 'WINSTON BLUE 100S', 'Codice ADM 1784. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON BLUE SUPER LINE', 'Codice ADM 2065. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON COMPACT', 'Codice ADM 20041. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON EXPAND', 'Codice ADM 20226. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON JUST BLUE', 'Codice ADM 21459. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON JUST RED', 'Codice ADM 21460. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON RED', 'Codice ADM 91. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON RED (cartoccio)', 'Codice ADM 245. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'cartoccio', 20),
+          ('WINSTON', 'WINSTON RED 100S', 'Codice ADM 1783. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON SHORT BLUE', 'Codice ADM 20648. Prezzo di vendita 5,50 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON SILVER', 'Codice ADM 134. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON SILVER 100S', 'Codice ADM 2296. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON SILVER SUPER LINE', 'Codice ADM 2066. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON WHITE', 'Codice ADM 1248. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('WINSTON', 'WINSTON WHITE SUPER LINE', 'Codice ADM 3467. Prezzo di vendita 5,80 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('YESMOKE', 'YESMOKE BLACK', 'Codice ADM 2341. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('YESMOKE', 'YESMOKE BLUE', 'Codice ADM 2262. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('YESMOKE', 'YESMOKE PLANET', 'Codice ADM 20211. Prezzo di vendita 5,20 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('YESMOKE', 'YESMOKE RED', 'Codice ADM 2069. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('YESMOKE', 'YESMOKE SILVER', 'Codice ADM 2682. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20),
+          ('YESMOKE', 'YESMOKE WHITE RED', 'Codice ADM 2072. Prezzo di vendita 5,40 € (listino ADM 5/06/2026).', 'astuccio', 20)
+     ) AS v(brand, name, description, format, sticks_per_pack)
+         JOIN brand b ON b.name = v.brand
+    ON CONFLICT (brand_id, name) DO NOTHING;
 
--- CHESTERFIELD
-INSERT INTO sigaretta VALUES (10, 'Chesterfield',    5.80, 0.80, 10.0, 'tradizionale', 'Chesterfield Original KS, tabacco americano classico con gusto deciso e intenso.', NULL);
-INSERT INTO sigaretta VALUES (11, 'Chesterfield',    5.80, 0.60, 8.0,  'light',        'Chesterfield Blue KS, versione leggera dal gusto morbido e armonioso.', NULL);
-INSERT INTO sigaretta VALUES (12, 'Chesterfield',    5.80, 0.40, 5.0,  'light',        'Chesterfield Silver KS, variante ancora più leggera con aroma delicato.', NULL);
-INSERT INTO sigaretta VALUES (13, 'Chesterfield',    5.50, 0.80, 10.0, 'tradizionale', 'Chesterfield Original KS cartoccio, formato cartoccio per uso quotidiano.', NULL);
-
--- MERIT
-INSERT INTO sigaretta VALUES (14, 'Merit',           6.50, 0.80, 10.0, 'tradizionale', 'Merit Gialla KS, sigaretta italiana molto apprezzata dal gusto caldo e rotondo.', NULL);
-INSERT INTO sigaretta VALUES (15, 'Merit',           6.50, 0.60, 8.0,  'light',        'Merit Blu KS, variante leggera con tabacco pregiato e aroma bilanciato.', NULL);
-INSERT INTO sigaretta VALUES (16, 'Merit',           6.50, 0.10, 1.0,  'super light',  'Merit SSL, variante super slim light, la più leggera della gamma Merit.', NULL);
-INSERT INTO sigaretta VALUES (17, 'Merit',           5.80, 0.60, 8.0,  'light',        'Merit Bay KS, versione economica della gamma con gusto morbido.', NULL);
-
--- CAMEL
-INSERT INTO sigaretta VALUES (18, 'Camel',           6.00, 0.80, 10.0, 'tradizionale', 'Camel Yellow, la classica con tabacco turkish e virginia, gusto unico e inconfondibile.', NULL);
-INSERT INTO sigaretta VALUES (19, 'Camel',           6.00, 0.60, 8.0,  'light',        'Camel Blue, versione leggera con blend equilibrato di tabacchi pregiati.', NULL);
-INSERT INTO sigaretta VALUES (20, 'Camel',           6.00, 0.70, 9.0,  'tradizionale', 'Camel Orange, gusto deciso con tabacco turkish e notes aromatiche.', NULL);
-INSERT INTO sigaretta VALUES (21, 'Camel',           6.00, 0.30, 4.0,  'super light',  'Camel Silver, variante ultra-leggera per chi preferisce un fumo delicato.', NULL);
-INSERT INTO sigaretta VALUES (22, 'Camel',           6.00, 0.60, 8.0,  'light',        'Camel Activate, con capsula mentolataper personalizzare l intensità aromatica.', NULL);
-INSERT INTO sigaretta VALUES (23, 'Camel',           5.70, 0.60, 8.0,  'light',        'Camel Compact, formato compatto di dimensioni ridotte.', NULL);
-
--- WINSTON
-INSERT INTO sigaretta VALUES (24, 'Winston',         5.50, 0.80, 10.0, 'tradizionale', 'Winston Red, gusto pieno e deciso con tabacco americano di alta qualità.', NULL);
-INSERT INTO sigaretta VALUES (25, 'Winston',         5.50, 0.60, 8.0,  'light',        'Winston Blue, versione leggera dal gusto morbido e raffinato.', NULL);
-INSERT INTO sigaretta VALUES (26, 'Winston',         5.50, 0.30, 4.0,  'super light',  'Winston Silver, variante super light per un fumo leggero e delicato.', NULL);
-INSERT INTO sigaretta VALUES (27, 'Winston',         5.50, 0.10, 1.0,  'super light',  'Winston White, la più leggera della gamma, quasi senza nicotina.', NULL);
-INSERT INTO sigaretta VALUES (28, 'Winston',         5.30, 0.80, 10.0, 'tradizionale', 'Winston Compact, formato ridotto con lo stesso gusto pieno del Red.', NULL);
-
--- DIANA
-INSERT INTO sigaretta VALUES (29, 'Diana',           5.50, 0.80, 10.0, 'tradizionale', 'Diana Rossa KS, storica sigaretta italiana dal gusto intenso e caratteristico.', NULL);
-INSERT INTO sigaretta VALUES (30, 'Diana',           5.50, 0.60, 8.0,  'light',        'Diana Blu KS, versione leggera della classica Diana, aroma rotondo.', NULL);
-INSERT INTO sigaretta VALUES (31, 'Diana',           5.50, 0.10, 1.0,  'super light',  'Diana SSL Blu, super slim light per un fumo leggero e quasi impalpabile.', NULL);
-
--- MURATTI
-INSERT INTO sigaretta VALUES (32, 'Muratti',         6.80, 0.80, 10.0, 'tradizionale', 'Muratti Ambassador Blue KS, sigaretta di lusso dal gusto sofisticato e raffinato.', NULL);
-INSERT INTO sigaretta VALUES (33, 'Muratti',         6.80, 0.30, 4.0,  'super light',  'Muratti Ambassador Silver KS, variante super light della gamma premium.', NULL);
-INSERT INTO sigaretta VALUES (34, 'Muratti',         6.80, 0.40, 5.0,  'light',        'Muratti Ambassador Azure KS, versione leggera con aroma delicato.', NULL);
-
--- LUCKY STRIKE
-INSERT INTO sigaretta VALUES (35, 'Lucky Strike',    5.50, 0.80, 10.0, 'tradizionale', 'Lucky Strike Original, celebre per il blend toasted con gusto robusto e avvolgente.', NULL);
-INSERT INTO sigaretta VALUES (36, 'Lucky Strike',    5.50, 0.60, 8.0,  'light',        'Lucky Strike Amber, variante leggera con blend più morbido e bilanciato.', NULL);
-INSERT INTO sigaretta VALUES (37, 'Lucky Strike',    5.50, 0.40, 4.0,  'light',        'Lucky Strike Silver Bay, gusto molto leggero con aroma pulito.', NULL);
-
--- BENSON & HEDGES
-INSERT INTO sigaretta VALUES (38, 'Benson & Hedges', 6.50, 0.90, 10.0, 'tradizionale', 'Benson & Hedges Gold, sigaretta premium con tabacco virginia di altissima qualità.', NULL);
-INSERT INTO sigaretta VALUES (39, 'Benson & Hedges', 5.30, 0.60, 7.0,  'light',        'Benson & Hedges Blue, versione leggera con aroma morbido e delicato.', NULL);
-INSERT INTO sigaretta VALUES (40, 'Benson & Hedges', 5.30, 0.30, 3.0,  'super light',  'Benson & Hedges Yellow, ultra leggera con pochissima nicotina.', NULL);
-
--- DAVIDOFF
-INSERT INTO sigaretta VALUES (41, 'Davidoff',        6.50, 0.80, 10.0, 'tradizionale', 'Davidoff Classic, sigaretta svizzera di lusso con tabacco pregiato e gusto elegante.', NULL);
-INSERT INTO sigaretta VALUES (42, 'Davidoff',        6.50, 0.60, 8.0,  'light',        'Davidoff Gold, versione leggera con aroma sofisticato e note di tabacco dorato.', NULL);
-INSERT INTO sigaretta VALUES (43, 'Davidoff',        5.80, 0.60, 7.0,  'light',        'Davidoff Blue, variante light con gusto armonioso e filtraggio premium.', NULL);
-
--- DUNHILL
-INSERT INTO sigaretta VALUES (44, 'Dunhill',         7.00, 0.90, 11.0, 'tradizionale', 'Dunhill International, la più premium del mercato italiano, tabacco finest virginia.', NULL);
-INSERT INTO sigaretta VALUES (45, 'Dunhill',         6.50, 0.70, 9.0,  'tradizionale', 'Dunhill Red, gusto pieno e aristocratico con blend di tabacchi selezionati.', NULL);
-INSERT INTO sigaretta VALUES (46, 'Dunhill',         6.50, 0.50, 7.0,  'light',        'Dunhill Gold, versione leggera della gamma premium con aroma bilanciato.', NULL);
-INSERT INTO sigaretta VALUES (47, 'Dunhill',         5.50, 0.60, 8.0,  'light',        'Dunhill MS Bionde, formato classico con blend britannico raffinato.', NULL);
-
--- ROTHMANS
-INSERT INTO sigaretta VALUES (48, 'Rothmans',        5.30, 0.60, 8.0,  'light',        'Rothmans of London Blue, sigaretta britannica con tabacco virginia di qualità.', NULL);
-INSERT INTO sigaretta VALUES (49, 'Rothmans',        5.30, 0.80, 10.0, 'tradizionale', 'Rothmans of London Red, gusto pieno con tradizione britannica.', NULL);
-INSERT INTO sigaretta VALUES (50, 'Rothmans',        5.30, 0.30, 4.0,  'super light',  'Rothmans of London Silver, variante leggera con aroma delicato.', NULL);
-INSERT INTO sigaretta VALUES (51, 'Rothmans',        5.00, 0.60, 8.0,  'light',        'Rothmans Essence Blue, versione economica della gamma con gusto morbido.', NULL);
-
--- L&M
-INSERT INTO sigaretta VALUES (52, 'L&M',             5.80, 0.80, 11.0, 'tradizionale', 'L&M Red Label KS, sigaretta americana dal gusto robusto e intenso.', NULL);
-INSERT INTO sigaretta VALUES (53, 'L&M',             5.80, 0.60, 8.0,  'light',        'L&M Blue Label KS, versione leggera dal gusto morbido e armonioso.', NULL);
-
--- GAULOISES
-INSERT INTO sigaretta VALUES (54, 'Gauloises',       5.30, 0.80, 10.0, 'tradizionale', 'Gauloises Blondes Rossa, iconica sigaretta francese dal carattere forte e deciso.', NULL);
-INSERT INTO sigaretta VALUES (55, 'Gauloises',       5.30, 0.60, 8.0,  'light',        'Gauloises Blondes Blu, versione leggera con aroma tipicamente francese.', NULL);
-INSERT INTO sigaretta VALUES (56, 'Gauloises',       5.20, 0.60, 8.0,  'light',        'Gauloises Blondes Gialla, variante extra light dal gusto delicato.', NULL);
-
--- GITANES
-INSERT INTO sigaretta VALUES (57, 'Gitanes',         6.50, 1.00, 13.0, 'tradizionale', 'Gitanes, leggendaria sigaretta francese dal gusto forte e pungente, con tabacco scuro.', NULL);
-INSERT INTO sigaretta VALUES (58, 'Gitanes',         5.90, 0.80, 11.0, 'tradizionale', 'Gitanes Filtre, versione con filtro della classica gitane per un fumo meno intenso.', NULL);
-
--- VOGUE
-INSERT INTO sigaretta VALUES (59, 'Vogue',           5.70, 0.60, 7.0,  'slims',        'Vogue Bleue, sigaretta slim elegante dal gusto delicato, icona di stile femminile.', NULL);
-INSERT INTO sigaretta VALUES (60, 'Vogue',           5.70, 0.60, 7.0,  'slims',        'Vogue Lilas, slim aromatizzata con note floreali e gusto leggero.', NULL);
-INSERT INTO sigaretta VALUES (61, 'Vogue',           5.70, 0.60, 7.0,  'slims',        'Vogue Classique Long Bleue, formato lungo slim con aroma raffinato.', NULL);
-
--- KENT
-INSERT INTO sigaretta VALUES (62, 'Kent',            6.50, 0.60, 8.0,  'light',        'Kent Blue, sigaretta premium con tecnologia Bioflow per un fumo pulito.', NULL);
-INSERT INTO sigaretta VALUES (63, 'Kent',            6.80, 0.70, 9.0,  'tradizionale', 'Kent Surround, la più innovativa con sistema di filtraggio avanzato.', NULL);
-
--- AMERICAN SPIRIT
-INSERT INTO sigaretta VALUES (64, 'American Spirit', 6.20, 1.00, 9.0,  'tradizionale', 'American Spirit Original Blue, tabacco biologico naturale senza additivi.', NULL);
-INSERT INTO sigaretta VALUES (65, 'American Spirit', 6.50, 0.40, 3.0,  'light',        'American Spirit Original Orange, versione extra light al 100% tabacco naturale.', NULL);
-INSERT INTO sigaretta VALUES (66, 'American Spirit', 6.50, 0.60, 5.0,  'light',        'American Spirit Original Yellow, blend naturale con gusto morbido e armonioso.', NULL);
-
--- MS NAZIONALI
-INSERT INTO sigaretta VALUES (67, 'MS',              5.40, 0.80, 10.0, 'tradizionale', 'MS Nazionali, storica sigaretta italiana di monopolio dal gusto classico e popolare.', NULL);
-INSERT INTO sigaretta VALUES (68, 'MS',              5.50, 0.70, 9.0,  'tradizionale', 'MS Classic, la versione classica delle nazionali in formato cartoccio.', NULL);
-
--- WEST
-INSERT INTO sigaretta VALUES (69, 'West',            5.00, 0.80, 10.0, 'tradizionale', 'West Original, sigaretta economica dal gusto pieno con ottimo rapporto qualità-prezzo.', NULL);
-INSERT INTO sigaretta VALUES (70, 'West',            5.00, 0.60, 8.0,  'light',        'West Blue, versione leggera a prezzo accessibile con aroma bilanciato.', NULL);
-INSERT INTO sigaretta VALUES (71, 'West',            5.00, 0.30, 4.0,  'super light',  'West Silver, variante super light della gamma economica West.', NULL);
-
--- PETER STUYVESANT
-INSERT INTO sigaretta VALUES (72, 'Peter Stuyvesant',6.00, 0.80, 10.0, 'tradizionale', 'Peter Stuyvesant Original, blend internazionale di tabacchi pregiati con gusto deciso.', NULL);
-INSERT INTO sigaretta VALUES (73, 'Peter Stuyvesant',6.00, 0.50, 6.0,  'light',        'Peter Stuyvesant Gold, versione leggera con aroma morbido e delicato.', NULL);
-INSERT INTO sigaretta VALUES (74, 'Peter Stuyvesant',5.30, 0.30, 4.0,  'super light',  'Peter Stuyvesant Blue, variante ultra-leggera dal gusto quasi impalpabile.', NULL);
-
--- JPS
-INSERT INTO sigaretta VALUES (75, 'JPS',             5.40, 0.80, 10.0, 'tradizionale', 'JPS Original, sigaretta economica dal gusto pieno con ottimo valore.', NULL);
-INSERT INTO sigaretta VALUES (76, 'JPS',             5.40, 0.70, 9.0,  'tradizionale', 'JPS Red, variante con blend robusto e aroma intenso.', NULL);
-INSERT INTO sigaretta VALUES (77, 'JPS',             5.40, 0.30, 4.0,  'super light',  'JPS Silver, versione super light della gamma JPS.', NULL);
-
--- GLAMOUR
-INSERT INTO sigaretta VALUES (78, 'Glamour',         6.20, 0.60, 7.0,  'slims',        'Glamour Pinks, sigaretta slim elegante con aroma leggero, icona di stile.', NULL);
-INSERT INTO sigaretta VALUES (79, 'Glamour',         6.20, 0.60, 7.0,  'slims',        'Glamour Blues, slim dalla colorazione blu con gusto delicato e raffinato.', NULL);
-
--- CORSET
-INSERT INTO sigaretta VALUES (80, 'Corset',          5.50, 0.70, 9.0,  'slims',        'Corset Lilas, sigaretta slim aromatizzata con note floreali e gusto delicato.', NULL);
-INSERT INTO sigaretta VALUES (81, 'Corset',          5.50, 0.70, 9.0,  'slims',        'Corset Pink, slim con packaging rosa elegante e aroma leggero.', NULL);
-
--- PUEBLO
-INSERT INTO sigaretta VALUES (82, 'Pueblo',          5.80, 0.80, 10.0, 'tradizionale', 'Pueblo Classic, tabacco biologico senza additivi, ideale per fumatori naturali.', NULL);
-INSERT INTO sigaretta VALUES (83, 'Pueblo',          5.80, 0.60, 8.0,  'light',        'Pueblo Blue, versione leggera del tabacco biologico senza additivi.', NULL);
-
--- CHIARAVALLE
-INSERT INTO sigaretta VALUES (84, 'Chiaravalle',     5.40, 0.80, 10.0, 'tradizionale', 'Chiaravalle Virginia, sigaretta italiana artigianale con tabacco virginia toscano.', NULL);
-INSERT INTO sigaretta VALUES (85, 'Chiaravalle',     5.50, 0.70, 9.0,  'tradizionale', 'Chiaravalle Fior di Tabacco, blend pregiato con tabacco italiano selezionato.', NULL);
-INSERT INTO sigaretta VALUES (86, 'Chiaravalle',     6.00, 0.80, 10.0, 'tradizionale', 'Chiaravalle Gran Riserva, la vetta della gamma con tabacco invecchiato di qualità.', NULL);
-
--- YESMOKE
-INSERT INTO sigaretta VALUES (87, 'YeSmoke',         5.40, 0.80, 10.0, 'tradizionale', 'YeSmoke Red, sigaretta italiana economica dal gusto classico e pieno.', NULL);
-INSERT INTO sigaretta VALUES (88, 'YeSmoke',         5.40, 0.60, 8.0,  'light',        'YeSmoke Blue, versione leggera a prezzo conveniente con aroma bilanciato.', NULL);
-INSERT INTO sigaretta VALUES (89, 'YeSmoke',         5.40, 0.30, 4.0,  'super light',  'YeSmoke Silver, variante super light della gamma economica italiana.', NULL);
-
--- PALL MALL
-INSERT INTO sigaretta VALUES (90, 'Pall Mall',       5.00, 0.70, 8.0,  'tradizionale', 'Pall Mall Red, sigaretta economica dal gusto robusto con ottimo rapporto prezzo.', NULL);
-INSERT INTO sigaretta VALUES (91, 'Pall Mall',       5.00, 0.60, 7.0,  'light',        'Pall Mall Blue, versione leggera a prezzo accessibile.', NULL);
+COMMIT;

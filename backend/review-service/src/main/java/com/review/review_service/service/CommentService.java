@@ -49,4 +49,13 @@ public class CommentService {
     }
 
 
+    public void deleteComment(Long idReview, Long id){
+        Comment comment = commentRepository.findByIdAndReviewId(id, idReview).orElseThrow(
+                () -> new IllegalArgumentException("Comment with id: " + id + " not find")
+        );
+        commentRepository.delete(comment);
+    }
+
+
+
 }
