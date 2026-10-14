@@ -1,11 +1,15 @@
 package it.cigbase.sigarette.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;import lombok.Data;import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cigarette")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cigarette {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +35,7 @@ public class Cigarette {
     private Float tar;
 
     @Column(name = "co_mg")
-    private Float co2;
+    private Float co;
 
     @Column(name = "format")
     private String format;
@@ -39,7 +43,7 @@ public class Cigarette {
     @Column(name = "sticks_per_pack")
     private Integer sticksTot;
 
-    @Column(name = "is_methol", nullable = false)
+    @Column(name = "is_menthol", nullable = false)
     private Boolean isMenthol;
 
     @Column(name = "avg_rating", nullable = false)

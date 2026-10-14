@@ -1,0 +1,7 @@
+package it.cigbase.sigarette.repository;
+
+import it.cigbase.sigarette.entity.Brand;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BrandRepository extends JpaRepository<Brand, Long> {
+}

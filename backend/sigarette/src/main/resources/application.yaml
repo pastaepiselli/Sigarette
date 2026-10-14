@@ -3,9 +3,11 @@ spring:
     name: sigarette
   datasource:
     url: jdbc:postgresql://localhost:5432/sigarette
-    username: postgres
+    username: username
+    password: password
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
-
+server:
+  port: 8080
