@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -22,11 +23,17 @@ public class CommentService {
     private ReviewRepository reviewRepository;
 
     public CommentResponseDTO getCommentById(Long idReview, Long id){
-        return commentRepository.findByIdAndReviewId(idReview, id)
+        return commentRepository.findByIdAndIdReview(idReview, id)
                 .map(CommentMapper::mapToDTO)
                 .orElseThrow(
                         () -> new IllegalArgumentException("Comment with id: " + id + " not found")
                 );
+    }
+
+    public List<CommentResponseDTO> getAllCommentsOfReview(Long idReview){
+        return commentRepository.findAllCommentsByIdReview(idReview).stream()
+                .map(CommentMapper::mapToDTO)
+                .toList();
     }
 
     public CommentResponseDTO createComment(Long idReview, CommentRequestDTO dto){
@@ -40,7 +47,7 @@ public class CommentService {
     }
 
     public CommentResponseDTO updateComment(Long idReview, Long id, CommentRequestDTO dto){
-        Comment comment = commentRepository.findByIdAndReviewId(id, idReview).orElseThrow(
+        Comment comment = commentRepository.findByIdAndIdReview(id, idReview).orElseThrow(
                 () -> new IllegalArgumentException("Comment con id: " + id + " non trovato")
         );
         comment.setDescription(dto.description());
@@ -50,12 +57,9 @@ public class CommentService {
 
 
     public void deleteComment(Long idReview, Long id){
-        Comment comment = commentRepository.findByIdAndReviewId(id, idReview).orElseThrow(
+        Comment comment = commentRepository.findByIdAndIdReview(id, idReview).orElseThrow(
                 () -> new IllegalArgumentException("Comment with id: " + id + " not find")
         );
         commentRepository.delete(comment);
     }
-
-
-
 }

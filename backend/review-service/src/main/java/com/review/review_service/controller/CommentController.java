@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "api/v1/reviews/{idReview}/comments")
 public class CommentController {
@@ -19,6 +21,12 @@ public class CommentController {
     public ResponseEntity<CommentResponseDTO> getCommentById(@PathVariable Long idReview, @PathVariable Long id){
         CommentResponseDTO comment = commentService.getCommentById(idReview, id);
         return ResponseEntity.ok(comment);
+    }
+
+    @GetMapping(path = "")
+    public ResponseEntity<List<CommentResponseDTO>> getAllCommentsOfReview(@PathVariable Long idReview){
+       List<CommentResponseDTO> comments = commentService.getAllCommentsOfReview(idReview);
+       return ResponseEntity.ok(comments);
     }
 
     @PostMapping(path = "")
