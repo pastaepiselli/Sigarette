@@ -42,6 +42,7 @@ public class CigaretteService {
         Float newAvg = sum / ratingsCount;
 
         cigarette.setAvgRating(newAvg);
+        cigarette.setRatingsCount(ratingsCount);
         return CigaretteMapper.mapToDTO(cigaretteRepository.save(cigarette));
     }
 }
