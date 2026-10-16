@@ -52,6 +52,7 @@ public class UserService {
         user.setUsername(dto.username());
         user.setBio(dto.bio());
         user.setImageUrl(dto.imageUrl());
+        user.setUpdatedAt(LocalDateTime.now());
 
         User updatedUser = userRepository.save(user);
         return UserMapper.mapToDTO(updatedUser);
