@@ -50,7 +50,7 @@ public class CommentController {
             @PathVariable Long idComment,
             @RequestBody CommentRequestDTO dto,
             @AuthenticationPrincipal Jwt jwt){
-        CommentResponseDTO comment = commentService.updateComment(idReview, idComment, dto);
+        CommentResponseDTO comment = commentService.updateComment(idReview, idComment, dto, jwt);
         return ResponseEntity.ok(comment);
     }
 
