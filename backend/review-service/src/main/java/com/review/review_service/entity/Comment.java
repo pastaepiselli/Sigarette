@@ -31,6 +31,6 @@ public class Comment {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "dt_inserimento", nullable = false)
-    private LocalDateTime dtInserimento;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }

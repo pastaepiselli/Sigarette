@@ -9,5 +9,5 @@ public record ReviewResponseDTO (
     Long idCigarette,
     Float rating,
     String description,
-    LocalDateTime dtInserimento
+    LocalDateTime updatedAt
 ){}

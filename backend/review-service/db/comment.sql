@@ -4,7 +4,7 @@ create table comment (
     id_review bigint not null,
     id_user uuid not null,
     description varchar(1000) not null,
-    dt_inserimento timestamp not null,
+    updated_at timestamp not null,
     foreign key (id_review)
         references review(id)
 );

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 @Builder
 public record ReviewRequestDTO(
-       Float rating,
-       String description
+        Long idCigarette,
+        Float rating,
+        String description
 ) {}

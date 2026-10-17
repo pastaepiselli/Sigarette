@@ -8,5 +8,5 @@ public record CommentResponseDTO (
         ReviewResponseDTO dto,
         UUID idUser,
         String description,
-        LocalDateTime dtInserimento
+        LocalDateTime updatedAt
 ) {}

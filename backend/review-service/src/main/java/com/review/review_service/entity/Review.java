@@ -33,6 +33,6 @@ public class Review {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "dt_inserimento")
-    private LocalDateTime dtInserimento;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

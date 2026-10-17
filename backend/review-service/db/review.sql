@@ -4,6 +4,6 @@ create table review (
     id_cigarette bigint not null,
     rating real check ( rating >= 0.5 and rating <= 5.0 ) not null,
     description varchar(1000),
-    dt_inserimento timestamp not null
+    updated_at timestamp not null
     -- magari altra roba
 );

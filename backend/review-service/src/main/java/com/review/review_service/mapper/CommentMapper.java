@@ -14,7 +14,7 @@ public class CommentMapper {
                 ReviewMapper.mapToDTO(comment.getReview()),
                 comment.getIdUser(),
                 comment.getDescription(),
-                comment.getDtInserimento()
+                comment.getUpdatedAt()
         );
     }
 

@@ -37,6 +37,7 @@ public class ReviewService {
         Review review = ReviewMapper.mapToEntity(dto);
         UUID idUser = UUID.fromString(jwt.getSubject());
         review.setIdUser(idUser);
+        cigaretteClient.updateAvgRating(review.getIdCigarette(), dto.rating());
         return ReviewMapper.mapToDTO(reviewRepository.save(review));
     }
 
@@ -51,7 +52,7 @@ public class ReviewService {
 
         review.setRating(dto.rating());
         review.setDescription(dto.description());
-        review.setDtInserimento(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now());
 
         Review savedReview = reviewRepository.save(review);
 

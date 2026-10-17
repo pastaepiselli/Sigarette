@@ -47,7 +47,7 @@ public class CommentService {
         UUID uuid = UUID.fromString(jwt.getSubject());
         comment.setReview(review);
         comment.setIdUser(uuid);
-        comment.setDtInserimento(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
         return CommentMapper.mapToDTO(commentRepository.save(comment));
     }
 
@@ -58,7 +58,7 @@ public class CommentService {
         );
 
         comment.setDescription(dto.description());
-        comment.setDtInserimento(LocalDateTime.now());
+        comment.setUpdatedAt(LocalDateTime.now());
 
         return CommentMapper.mapToDTO(commentRepository.save(comment));
     }

@@ -15,7 +15,7 @@ public class ReviewMapper {
                 review.getIdCigarette(),
                 review.getRating(),
                 review.getDescription(),
-                review.getDtInserimento()
+                review.getUpdatedAt()
         );
     }
 
