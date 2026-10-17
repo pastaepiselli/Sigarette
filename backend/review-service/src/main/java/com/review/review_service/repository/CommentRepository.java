@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query(value =
@@ -24,6 +25,17 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     where c.id_review =:idReview
     """, nativeQuery = true)
     List<Comment> findAllCommentsByIdReview(Long idReview);
+
+    @Query(value =
+    """
+    select * 
+        from comment c
+    where c.id =:idComment
+    and c.id_user =:idUser
+    and c.id_review =:idReview
+    """, nativeQuery = true)
+    Optional<Comment> findMyCommentById(Long idReview, Long idComment, UUID idUser);
+
 
 }
 

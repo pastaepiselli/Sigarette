@@ -1,3 +1,18 @@
 spring:
   application:
     name: user-service
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8060/realms/sigarette

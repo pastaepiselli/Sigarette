@@ -34,6 +34,11 @@ public class UserService {
         return UserMapper.mapToDTO(userRepository.save(user));
     }
 
+    public UserResponseDTO getCurrentUser(Jwt jwt){
+        UUID uuid = UUID.fromString(jwt.getSubject());
+        return getUserById(uuid);
+    }
+
     public UserResponseDTO getUserById(UUID uuid){
         return userRepository.findById(uuid)
                 .map(UserMapper::mapToDTO).orElseThrow(

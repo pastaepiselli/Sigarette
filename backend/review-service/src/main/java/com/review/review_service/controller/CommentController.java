@@ -6,19 +6,24 @@ import com.review.review_service.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/reviews/{idReview}/comments")
+@RequestMapping(path = "/reviews/{idReview}/comments")
 public class CommentController {
 
     @Autowired
     private CommentService commentService;
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CommentResponseDTO> getCommentById(@PathVariable Long idReview, @PathVariable Long id){
+    public ResponseEntity<CommentResponseDTO> getCommentById(
+            @PathVariable Long idReview,
+            @PathVariable Long id)
+    {
         CommentResponseDTO comment = commentService.getCommentById(idReview, id);
         return ResponseEntity.ok(comment);
     }
@@ -30,17 +35,22 @@ public class CommentController {
     }
 
     @PostMapping(path = "")
-    public ResponseEntity<CommentResponseDTO> createComment(@PathVariable Long idReview, @RequestBody CommentRequestDTO dto){
-        CommentResponseDTO comment = commentService.createComment(idReview, dto);
+    public ResponseEntity<CommentResponseDTO> createComment(
+            @PathVariable Long idReview,
+            @RequestBody CommentRequestDTO dto,
+            @AuthenticationPrincipal Jwt jwt)
+    {
+        CommentResponseDTO comment = commentService.createComment(idReview, dto, jwt);
         return ResponseEntity.ok(comment);
     }
 
-    @PutMapping(path = "/{id}")
+    @PutMapping(path = "/{idComment}")
     public ResponseEntity<CommentResponseDTO> updateComment(
             @PathVariable Long idReview,
-            @PathVariable Long id,
-            @RequestBody CommentRequestDTO dto){
-        CommentResponseDTO comment = commentService.updateComment(idReview, id, dto);
+            @PathVariable Long idComment,
+            @RequestBody CommentRequestDTO dto,
+            @AuthenticationPrincipal Jwt jwt){
+        CommentResponseDTO comment = commentService.updateComment(idReview, idComment, dto);
         return ResponseEntity.ok(comment);
     }
 
@@ -48,10 +58,11 @@ public class CommentController {
     @ResponseStatus(HttpStatus.CREATED)
     public void deleteComment(
             @PathVariable Long idReview,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @AuthenticationPrincipal Jwt jwt
     )
     {
-        commentService.deleteComment(idReview, id);
+        commentService.deleteComment(idReview, id, jwt);
     }
 
 }

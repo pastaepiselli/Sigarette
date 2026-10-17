@@ -2,7 +2,7 @@
 create table comment (
     id bigserial primary key,
     id_review bigint not null,
-    id_user bigint not null,
+    id_user uuid not null,
     description varchar(1000) not null,
     dt_inserimento timestamp not null,
     foreign key (id_review)

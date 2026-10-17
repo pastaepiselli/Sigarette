@@ -8,10 +8,12 @@ import com.review.review_service.mapper.CommentMapper;
 import com.review.review_service.repository.CommentRepository;
 import com.review.review_service.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CommentService {
@@ -36,29 +38,37 @@ public class CommentService {
                 .toList();
     }
 
-    public CommentResponseDTO createComment(Long idReview, CommentRequestDTO dto){
+    public CommentResponseDTO createComment(Long idReview, CommentRequestDTO dto, Jwt jwt){
         Comment comment = CommentMapper.mapToEntity(dto);
         Review review = reviewRepository.findById(idReview).
                 orElseThrow(
                         () -> new IllegalArgumentException("Review con id: " + idReview + " non trovata")
                 );
+        UUID uuid = UUID.fromString(jwt.getSubject());
         comment.setReview(review);
-        return CommentMapper.mapToDTO(commentRepository.save(comment));
-    }
-
-    public CommentResponseDTO updateComment(Long idReview, Long id, CommentRequestDTO dto){
-        Comment comment = commentRepository.findByIdAndIdReview(id, idReview).orElseThrow(
-                () -> new IllegalArgumentException("Comment con id: " + id + " non trovato")
-        );
-        comment.setDescription(dto.description());
+        comment.setIdUser(uuid);
         comment.setDtInserimento(LocalDateTime.now());
         return CommentMapper.mapToDTO(commentRepository.save(comment));
     }
 
+    public CommentResponseDTO updateComment(Long idReview, Long idComment, CommentRequestDTO dto, Jwt jwt){
+        UUID idUser = UUID.fromString(jwt.getSubject());
+        Comment comment = commentRepository.findMyCommentById(idReview, idComment, idUser).orElseThrow(
+                () -> new IllegalArgumentException("Comment with id: " + idComment + " not found")
+        );
 
-    public void deleteComment(Long idReview, Long id){
-        Comment comment = commentRepository.findByIdAndIdReview(id, idReview).orElseThrow(
-                () -> new IllegalArgumentException("Comment with id: " + id + " not find")
+        comment.setDescription(dto.description());
+        comment.setDtInserimento(LocalDateTime.now());
+
+        return CommentMapper.mapToDTO(commentRepository.save(comment));
+    }
+
+
+    public void deleteComment(Long idReview, Long idComment, Jwt jwt){
+
+        UUID idUser = UUID.fromString(jwt.getSubject());
+        Comment comment = commentRepository.findMyCommentById(idReview, idComment, idUser).orElseThrow(
+                () -> new IllegalArgumentException("Comment with id: " + idComment + " not found")
         );
         commentRepository.delete(comment);
     }

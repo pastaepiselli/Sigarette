@@ -17,11 +17,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/me")
+    @PostMapping(path = "/create")
     public ResponseEntity<UserResponseDTO> createUser(
             @AuthenticationPrincipal Jwt jwt
     ){
         UserResponseDTO user = userService.createUser(jwt);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping(path = "/me")
+    public ResponseEntity<UserResponseDTO> getCurrentUser(
+            @AuthenticationPrincipal Jwt jwt)
+    {
+        UserResponseDTO user = userService.getCurrentUser(jwt);
         return ResponseEntity.ok(user);
     }
 
@@ -40,5 +48,4 @@ public class UserController {
         UserResponseDTO user = userService.getUserById(uuid);
         return ResponseEntity.ok(user);
     }
-
 }

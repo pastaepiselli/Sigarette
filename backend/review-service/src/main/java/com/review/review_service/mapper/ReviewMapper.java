@@ -22,7 +22,7 @@ public class ReviewMapper {
     public static Review mapToEntity(ReviewRequestDTO dto){
         return new Review(
                 null,
-                dto.idUser(),
+                null,
                 dto.idCigarette(),
                 dto.rating(),
                 dto.description(),

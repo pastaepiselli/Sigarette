@@ -7,11 +7,13 @@ import com.review.review_service.entity.Review;
 import com.review.review_service.mapper.ReviewMapper;
 import com.review.review_service.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ReviewService {
@@ -23,7 +25,7 @@ public class ReviewService {
     private CigaretteClient cigaretteClient;
 
     public ReviewResponseDTO getReviewById(Long id){
-        return  reviewRepository.findById(id)
+        return reviewRepository.findById(id)
                 .map(ReviewMapper::mapToDTO)
                 .orElseThrow(
                         () -> new IllegalArgumentException("Review with id: " + id + " not found")
@@ -31,28 +33,37 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponseDTO createReview(ReviewRequestDTO dto){
-        Review review = reviewRepository.save(ReviewMapper.mapToEntity(dto));
-        cigaretteClient.updateAvgRating(dto.idCigarette(), dto.rating());
-        return ReviewMapper.mapToDTO(review);
+    public ReviewResponseDTO createReview(ReviewRequestDTO dto, Jwt jwt){
+        Review review = ReviewMapper.mapToEntity(dto);
+        UUID idUser = UUID.fromString(jwt.getSubject());
+        review.setIdUser(idUser);
+        return ReviewMapper.mapToDTO(reviewRepository.save(review));
     }
 
     @Transactional
-    public ReviewResponseDTO updateReview(Long id, ReviewRequestDTO dto){
-        Review review = reviewRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Review with id: " + id + " not found")
+    public ReviewResponseDTO updateReview(Long idReview, ReviewRequestDTO dto, Jwt jwt){
+
+        // devo trovare la mia review
+        UUID uuid = UUID.fromString(jwt.getSubject());
+        Review review = reviewRepository.findMyReviewWithId(idReview, uuid).orElseThrow(
+                () -> new IllegalArgumentException("Review with id: " + idReview + " of this user not found")
         );
+
+        review.setRating(dto.rating());
         review.setDescription(dto.description());
         review.setDtInserimento(LocalDateTime.now());
-        review.setRating(dto.rating());
 
-        Review updatedReview = reviewRepository.save(review);
-        return ReviewMapper.mapToDTO(updatedReview);
+        Review savedReview = reviewRepository.save(review);
+
+        cigaretteClient.updateAvgRating(review.getIdCigarette(), dto.rating());
+
+        return ReviewMapper.mapToDTO(savedReview);
     }
 
-    public void deleteReview(Long id){
-        Review review = reviewRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Review with id: " + id + " not found")
+    public void deleteReview(Long idReview, Jwt jwt){
+        UUID idUser = UUID.fromString(jwt.getSubject());
+        Review review = reviewRepository.findMyReviewWithId(idReview, idUser).orElseThrow(
+                () -> new IllegalArgumentException("Review with id: " + idReview + " of this user not found")
         );
         reviewRepository.delete(review);
     }
