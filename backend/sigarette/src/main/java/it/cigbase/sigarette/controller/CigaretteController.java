@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/cigarette")
+@RequestMapping(path = "/cigarette")
 public class CigaretteController {
 
     @Autowired
@@ -27,17 +27,20 @@ public class CigaretteController {
         return ResponseEntity.ok(cigarettes);
     }
 
+    // TODO: sostiuire questi metodi con una coda di activemq o una coda qualsiasi
     /**
      * Endpoint chiamato dal microsevizio di review quando viene aggiunta una review su una sigaretta.
-     * @param id
+     * @param idCigarette
      * @param rating da 0.5 a 5
      * @return sigaretta con con avg aumentato
      */
-    @PatchMapping(path = "/{id}")
-    public ResponseEntity<CigaretteResponseDTO> updateReviews(@PathVariable Long id, @RequestParam Float rating){
-        CigaretteResponseDTO cigarette = cigaretteService.updateAvgRating(id, rating);
+    @PostMapping(path = "/{idCigarette}/reviews")
+    public ResponseEntity<CigaretteResponseDTO> addRating(
+            @PathVariable Long idCigarette,
+            @RequestParam Float rating
+    )
+    {
+        CigaretteResponseDTO cigarette = cigaretteService.addRating(idCigarette, rating);
         return ResponseEntity.ok(cigarette);
     }
-
-
 }

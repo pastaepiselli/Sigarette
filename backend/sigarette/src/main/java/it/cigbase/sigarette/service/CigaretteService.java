@@ -31,18 +31,34 @@ public class CigaretteService {
                 .toList();
     }
 
-    public CigaretteResponseDTO updateAvgRating(Long id, Float rating){
+    public CigaretteResponseDTO addRating(Long id, Float rating){
         Cigarette cigarette = cigaretteRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Cigarette with id: " + id + " not found")
         );
 
-        Integer ratingsCount = cigarette.getRatingsCount() + 1;
-        Float sum = cigarette.getAvgRating() + rating;
-
-        Float newAvg = sum / ratingsCount;
+        int count = cigarette.getRatingsCount();
+        Float newAvg = (cigarette.getAvgRating() * count + rating) / (count + 1);
 
         cigarette.setAvgRating(newAvg);
-        cigarette.setRatingsCount(ratingsCount);
+        cigarette.setRatingsCount(count + 1);
+        return CigaretteMapper.mapToDTO(cigaretteRepository.save(cigarette));
+    }
+
+    public CigaretteResponseDTO deleteRating(Long idCigarette, Float rating){
+        Cigarette cigarette = cigaretteRepository.findById(idCigarette).orElseThrow(
+                () -> new IllegalArgumentException("Cigarette with id: " + idCigarette + " not found")
+        );
+
+        int count = cigarette.getRatingsCount();
+        if (count <= 0){
+            throw new IllegalArgumentException("There arent reviews to remove");
+        }
+
+        Float newAvg = count - 1 == 0 ? 0 : (cigarette.getAvgRating() * count - rating) / (count - 1);
+
+        cigarette.setAvgRating(newAvg);
+        cigarette.setRatingsCount(count - 1);
+
         return CigaretteMapper.mapToDTO(cigaretteRepository.save(cigarette));
     }
 }
