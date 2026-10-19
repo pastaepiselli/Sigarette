@@ -4,9 +4,13 @@ import com.review.review_service.clients.CigaretteClient;
 import com.review.review_service.dto.ReviewRequestDTO;
 import com.review.review_service.dto.ReviewResponseDTO;
 import com.review.review_service.entity.Review;
+import com.review.review_service.events.ReviewEvent;
 import com.review.review_service.mapper.ReviewMapper;
 import com.review.review_service.repository.ReviewRepository;
+import com.review.review_service.util.ReviewEventType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,12 @@ public class ReviewService {
     @Autowired
     private CigaretteClient cigaretteClient;
 
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @Value("${spring.activemq.queue}")
+    private String queue;
+
     public ReviewResponseDTO getReviewById(Long id){
         return reviewRepository.findById(id)
                 .map(ReviewMapper::mapToDTO)
@@ -37,7 +47,12 @@ public class ReviewService {
         Review review = ReviewMapper.mapToEntity(dto);
         UUID idUser = UUID.fromString(jwt.getSubject());
         review.setIdUser(idUser);
-        cigaretteClient.updateAvgRating(review.getIdCigarette(), dto.rating());
+        // questo metodo invia il mess convertendolo in jms object
+        ReviewEvent reviewEvent = new ReviewEvent(
+                dto.idCigarette(),
+                dto.rating(),
+                ReviewEventType.REVIEW_EVENT_CREATED);
+        jmsTemplate.convertAndSend(queue, reviewEvent);
         return ReviewMapper.mapToDTO(reviewRepository.save(review));
     }
 
@@ -54,10 +69,13 @@ public class ReviewService {
         review.setDescription(dto.description());
         review.setUpdatedAt(LocalDateTime.now());
 
+        ReviewEvent reviewEvent = new ReviewEvent(
+                review.getIdCigarette(),
+                dto.rating(),
+                ReviewEventType.REVIEW_EVENT_UPDATED);
+        jmsTemplate.convertAndSend(queue, reviewEvent);
+
         Review savedReview = reviewRepository.save(review);
-
-        cigaretteClient.updateAvgRating(review.getIdCigarette(), dto.rating());
-
         return ReviewMapper.mapToDTO(savedReview);
     }
 
@@ -66,6 +84,13 @@ public class ReviewService {
         Review review = reviewRepository.findMyReviewWithId(idReview, idUser).orElseThrow(
                 () -> new IllegalArgumentException("Review with id: " + idReview + " of this user not found")
         );
+
+        ReviewEvent reviewEvent =  new ReviewEvent(
+                review.getIdCigarette(),
+                review.getRating(),
+                ReviewEventType.REVIEW_EVENT_DELETED
+        );
+        jmsTemplate.convertAndSend(queue, reviewEvent);
         reviewRepository.delete(review);
     }
 

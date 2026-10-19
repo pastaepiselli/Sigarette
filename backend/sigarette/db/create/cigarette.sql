@@ -2,6 +2,7 @@ create table cigarette (
     id bigserial primary key ,
     brand_id bigint not null references brand(id),
     name varchar(150) not null,
+    price real not null,
     description text,
     image_url varchar(500),
     nicotine_mg real,

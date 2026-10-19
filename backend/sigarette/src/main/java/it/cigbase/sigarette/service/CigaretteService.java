@@ -2,10 +2,13 @@ package it.cigbase.sigarette.service;
 
 import it.cigbase.sigarette.dto.CigaretteResponseDTO;
 import it.cigbase.sigarette.entity.Cigarette;
+import it.cigbase.sigarette.event.ReviewEvent;
 import it.cigbase.sigarette.mapper.CigaretteMapper;
 import it.cigbase.sigarette.repository.CigaretteRepository;
+import it.cigbase.sigarette.util.ReviewEventType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +34,24 @@ public class CigaretteService {
                 .toList();
     }
 
-    public CigaretteResponseDTO addRating(Long id, Float rating){
+    @JmsListener(destination = "reviews-queue")
+    public void recive(ReviewEvent event){
+        Long idCigarette = event.getIdCigarette();
+        Float rating = event.getRating();
+        switch (event.getReviewEventType()){
+
+            case ReviewEventType.REVIEW_EVENT_CREATED:
+                addRating(idCigarette, rating);
+                break;
+
+            case ReviewEventType.REVIEW_EVENT_DELETED:
+                deleteRating(idCigarette, rating);
+                break;
+
+        }
+    }
+
+    private void addRating(Long id, Float rating){
         Cigarette cigarette = cigaretteRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Cigarette with id: " + id + " not found")
         );
@@ -41,10 +61,12 @@ public class CigaretteService {
 
         cigarette.setAvgRating(newAvg);
         cigarette.setRatingsCount(count + 1);
-        return CigaretteMapper.mapToDTO(cigaretteRepository.save(cigarette));
+        cigaretteRepository.save(cigarette);
     }
 
-    public CigaretteResponseDTO deleteRating(Long idCigarette, Float rating){
+    // TODO: fare anche update...
+
+    private void deleteRating(Long idCigarette, Float rating){
         Cigarette cigarette = cigaretteRepository.findById(idCigarette).orElseThrow(
                 () -> new IllegalArgumentException("Cigarette with id: " + idCigarette + " not found")
         );
@@ -59,6 +81,6 @@ public class CigaretteService {
         cigarette.setAvgRating(newAvg);
         cigarette.setRatingsCount(count - 1);
 
-        return CigaretteMapper.mapToDTO(cigaretteRepository.save(cigarette));
+        cigaretteRepository.save(cigarette);
     }
 }

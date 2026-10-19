@@ -1,4 +1,9 @@
 spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+    queue: reviews-queue
   application:
     name: review-service
   jpa:
@@ -7,8 +12,12 @@ spring:
     show-sql: true
   datasource:
     url: jdbc:postgresql://localhost:5432/reviews
-    username: username
-    password: password
+    username: postgres
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8060/realms/sigarette
 
 server:
   port: 8081

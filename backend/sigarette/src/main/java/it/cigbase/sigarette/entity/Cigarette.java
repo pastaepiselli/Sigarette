@@ -22,6 +22,9 @@ public class Cigarette {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "price", nullable = false)
+    private Float price;
+
     @Column(name = "description")
     private String description;
 

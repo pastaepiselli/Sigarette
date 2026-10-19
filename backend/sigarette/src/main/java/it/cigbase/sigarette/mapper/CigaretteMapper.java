@@ -9,6 +9,7 @@ public class CigaretteMapper {
                 cigarette.getId(),
                 BrandMapper.mapToDTO(cigarette.getBrand()),
                 cigarette.getName(),
+                cigarette.getPrice(),
                 cigarette.getDescription(),
                 cigarette.getImageUrl(),
                 cigarette.getNicotine(),
