@@ -1,6 +1,5 @@
 package com.review.review_service.service;
 
-import com.review.review_service.clients.CigaretteClient;
 import com.review.review_service.dto.ReviewRequestDTO;
 import com.review.review_service.dto.ReviewResponseDTO;
 import com.review.review_service.entity.Review;
@@ -26,9 +25,6 @@ public class ReviewService {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private CigaretteClient cigaretteClient;
-
-    @Autowired
     private JmsTemplate jmsTemplate;
 
     @Value("${spring.activemq.queue}")
@@ -51,6 +47,7 @@ public class ReviewService {
         ReviewEvent reviewEvent = new ReviewEvent(
                 dto.idCigarette(),
                 dto.rating(),
+                nullp,
                 ReviewEventType.REVIEW_EVENT_CREATED);
         jmsTemplate.convertAndSend(queue, reviewEvent);
         return ReviewMapper.mapToDTO(reviewRepository.save(review));
@@ -65,6 +62,7 @@ public class ReviewService {
                 () -> new IllegalArgumentException("Review with id: " + idReview + " of this user not found")
         );
 
+        Float oldRating = review.getRating();
         review.setRating(dto.rating());
         review.setDescription(dto.description());
         review.setUpdatedAt(LocalDateTime.now());
@@ -72,6 +70,7 @@ public class ReviewService {
         ReviewEvent reviewEvent = new ReviewEvent(
                 review.getIdCigarette(),
                 dto.rating(),
+                oldRating,
                 ReviewEventType.REVIEW_EVENT_UPDATED);
         jmsTemplate.convertAndSend(queue, reviewEvent);
 
@@ -88,6 +87,7 @@ public class ReviewService {
         ReviewEvent reviewEvent =  new ReviewEvent(
                 review.getIdCigarette(),
                 review.getRating(),
+                null,
                 ReviewEventType.REVIEW_EVENT_DELETED
         );
         jmsTemplate.convertAndSend(queue, reviewEvent);

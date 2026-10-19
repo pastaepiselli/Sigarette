@@ -13,5 +13,6 @@ import java.io.Serializable;
 public class ReviewEvent implements Serializable {
     private Long idCigarette;
     private Float rating;
+    private Float oldRating;
     private ReviewEventType reviewEventType;
 }

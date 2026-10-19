@@ -38,16 +38,22 @@ public class CigaretteService {
     public void recive(ReviewEvent event){
         Long idCigarette = event.getIdCigarette();
         Float rating = event.getRating();
+        Float oldRating = event.getOldRating();
         switch (event.getReviewEventType()){
-
             case ReviewEventType.REVIEW_EVENT_CREATED:
                 addRating(idCigarette, rating);
+                break;
+
+            case ReviewEventType.REVIEW_EVENT_UPDATED:
+                updateRating(idCigarette, rating, oldRating);
                 break;
 
             case ReviewEventType.REVIEW_EVENT_DELETED:
                 deleteRating(idCigarette, rating);
                 break;
 
+            default:
+                throw new IllegalArgumentException("Cosa e successo");
         }
     }
 
@@ -64,7 +70,17 @@ public class CigaretteService {
         cigaretteRepository.save(cigarette);
     }
 
-    // TODO: fare anche update...
+    private void updateRating(Long idCigarette, Float rating, Float oldRating){
+        Cigarette cigarette = cigaretteRepository.findById(idCigarette).orElseThrow(
+                () -> new IllegalArgumentException("Cigarette with id: " + idCigarette + " not found")
+        );
+
+        int count = cigarette.getRatingsCount();
+        Float newAvg = (cigarette.getAvgRating() * count - oldRating + rating) / (count);
+
+        cigarette.setAvgRating(newAvg);
+        cigaretteRepository.save(cigarette);
+    }
 
     private void deleteRating(Long idCigarette, Float rating){
         Cigarette cigarette = cigaretteRepository.findById(idCigarette).orElseThrow(
@@ -83,4 +99,5 @@ public class CigaretteService {
 
         cigaretteRepository.save(cigarette);
     }
+
 }
