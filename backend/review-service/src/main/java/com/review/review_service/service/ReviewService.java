@@ -47,7 +47,7 @@ public class ReviewService {
         ReviewEvent reviewEvent = new ReviewEvent(
                 dto.idCigarette(),
                 dto.rating(),
-                nullp,
+                null,
                 ReviewEventType.REVIEW_EVENT_CREATED);
         jmsTemplate.convertAndSend(queue, reviewEvent);
         return ReviewMapper.mapToDTO(reviewRepository.save(review));

@@ -16,3 +16,9 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8060/realms/sigarette
+springdoc:
+  api-docs:
+    path: api-docs
+    enabled: true
+server:
+  port: 8083
