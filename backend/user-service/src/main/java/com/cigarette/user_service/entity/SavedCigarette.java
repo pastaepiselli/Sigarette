@@ -3,6 +3,7 @@ package com.cigarette.user_service.entity;
 import com.cigarette.user_service.util.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class SavedCigarette {
 
     @Id
