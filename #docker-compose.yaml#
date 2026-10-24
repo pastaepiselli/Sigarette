@@ -1,0 +1,94 @@
+services:
+  database:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/database/init/10-create-databases.sh:/docker-entrypoint-initdb.d/10-create-databases.sh:ro
+      - ./backend/user-service/db/user.sql:/schema/user.sql:ro
+      - ./backend/user-service/db/saved_cigarettes.sql:/schema/saved_cigarettes.sql:ro
+      - ./backend/review-service/db/review.sql:/schema/review.sql:ro
+      - ./backend/review-service/db/comment.sql:/schema/comment.sql:ro
+      - ./backend/sigarette/db/create/brand.sql:/schema/brand.sql:ro
+      - ./backend/sigarette/db/create/cigarette.sql:/schema/cigarette.sql:ro
+      - ./backend/sigarette/db/insert/insert.sql:/schema/insert.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d users"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  activemq:
+    image: apache/activemq-classic:6.2.0
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.8.1
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME: http://localhost:8060
+    ports:
+      - "8060:8080"
+    volumes:
+      - ./backend/keycloak/realm-sigarette.json:/opt/keycloak/data/import/realm-sigarette.json:ro
+
+  sigarette:
+    build: ./backend/sigarette
+    depends_on:
+      database:
+        condition: service_healthy
+      activemq:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/sigarette
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+    ports:
+      - "8080:8080"
+
+  review-service:
+    build: ./backend/review-service
+    depends_on:
+      database:
+        condition: service_healthy
+      activemq:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/reviews
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8060/realms/sigarette
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/sigarette/protocol/openid-connect/certs
+    ports:
+      - "8081:8081"
+
+  user-service:
+    build: ./backend/user-service
+    depends_on:
+      database:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/users
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8060/realms/sigarette
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/sigarette/protocol/openid-connect/certs
+    ports:
+      - "8083:8083"
+
+volumes:
+  postgres-data:
