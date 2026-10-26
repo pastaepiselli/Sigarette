@@ -1,4 +1,6 @@
 #!/bin/sh
+
+# script che viene eseguito nel docker compose all'avvio di postgres
 set -eu
 
 createdb -U "$POSTGRES_USER" reviews

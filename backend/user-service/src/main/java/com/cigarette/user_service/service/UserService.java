@@ -39,10 +39,10 @@ public class UserService {
         return getUserById(uuid);
     }
 
-    public UserResponseDTO getUserById(UUID uuid){
-        return userRepository.findById(uuid)
+    public UserResponseDTO getUserByUsername(String username){
+        return userRepository.findByUsername(username)
                 .map(UserMapper::mapToDTO).orElseThrow(
-                () -> new IllegalArgumentException("User con uuid: " + uuid + " non trovato")
+                () -> new IllegalArgumentException("User con username: " + username + " non trovato")
         );
     }
 

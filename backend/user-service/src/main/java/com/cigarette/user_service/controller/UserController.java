@@ -9,7 +9,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -43,9 +42,9 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping(path = "/{uuid}")
-    public ResponseEntity<UserResponseDTO> getUserByID(@PathVariable UUID uuid){
-        UserResponseDTO user = userService.getUserById(uuid);
+    @GetMapping(path = "/{username}")
+    public ResponseEntity<UserResponseDTO> getUserByUsername(@PathVariable String username){
+        UserResponseDTO user = userService.getUserByUsername(username);
         return ResponseEntity.ok(user);
     }
 }
