@@ -1,16 +1,19 @@
-# Backend — CigBase
+# Backend — Sigarette
 
 Il backend gestisce il catalogo di sigarette italiane, le recensioni con voto e testo, i commenti, i profili applicativi degli utenti e le loro liste personali. Il catalogo è stato compilato a partire dal [documento ADM sulle sigarette](https://www.adm.gov.it/portale/documents/20182/1106899/3.1-LIST+SIGARETTE.pdf/42c96880-1905-fbb1-7d19-caf6a7bcc57a?t=1780641495560), con prezzi aggiornati al 05/06/2026.
 
 ## Tecnologie
 
-- **Java 21** e **Spring Boot** per i servizi backend (le versioni di Spring Boot sono definite separatamente nei rispettivi `pom.xml`).
+- **Java 21** e **Spring Boot** per i servizi backend.
 - **PostgreSQL 17** per i dati, suddivisi in tre database: `sigarette`, `reviews` e `users`.
 - **ActiveMQ Classic** per la messaggistica tra il servizio recensioni e il catalogo.
 - **Keycloak** per la gestione degli utenti e l’autenticazione tramite token JWT.
 - **Docker Compose** per avviare l’ambiente locale; **Springdoc OpenAPI** per la documentazione delle API.
 
 ## Architettura
+
+![Diagramma dell'architettura backend](../architettura.png)
+
 Il backend è composto da tre microservizi. Ogni servizio possiede il proprio database logico PostgreSQL.
 
 | Servizio | Porta | Responsabilità |
@@ -23,8 +26,6 @@ Il backend è composto da tre microservizi. Ogni servizio possiede il proprio da
 | PostgreSQL | 5432 | Istanza condivisa con database separati per i tre servizi. |
 
 Il servizio recensioni pubblica su ActiveMQ gli eventi di creazione, modifica e cancellazione, includendo il voto nuovo (e, in caso di modifica, quello precedente). Il servizio catalogo li usa per aggiornare la valutazione media e il conteggio delle valutazioni della sigaretta interessata. (gasa una cifra)
-
-![Diagramma dell'architettura backend](../architettura.png)
 
 ## Avvio locale
 
@@ -97,13 +98,15 @@ Per creare o aggiornare un commento, il corpo è `{ "description": "Testo del co
 | `POST` | `/users/create` | Crea il profilo applicativo dell’utente autenticato. |
 | `GET` | `/users/me` | Legge il proprio profilo. |
 | `PUT` | `/users/me` | Aggiorna il proprio profilo. |
-| `GET` | `/users/{uuid}` | Legge un profilo tramite UUID. |
+| `GET` | `/users/{username}` | Legge un profilo tramite username. |
 | `GET` | `/users/me/saved-cigarettes?status={status}` | Elenca le proprie sigarette salvate per stato. |
 | `GET` | `/users/{username}/saved-cigarettes?status={status}` | Elenca le sigarette salvate da un utente per stato. |
 | `POST` | `/users/me/saved-cigarettes` | Aggiunge una sigaretta a una lista personale. |
 | `DELETE` | `/users/me/saved-cigarettes/{idSavedCig}` | Rimuove una sigaretta salvata. |
 
-Il corpo per salvare una sigaretta è `{ "idCigarette": 1, "status": "WANT_TO_TRY" }`. I valori ammessi per `status` sono `WANT_TO_TRY` (vorrei provare) e `LIKED` (preferite).
+Il corpo per aggiornare il profilo è, ad esempio, `{ "username": "mario", "imageUrl": "https://example.org/avatar.png", "bio": "La mia bio" }`. `username` è obbligatorio e univoco nel database del servizio utenti; `imageUrl` e `bio` possono essere omessi o null. La creazione del profilo inizializza lo username usando il claim `preferred_username` del token Keycloak. L’aggiornamento descritto da `PUT /users/me` agisce sul profilo applicativo del servizio.
+
+Il corpo per salvare una sigaretta è `{ "idCigarette": 1, "status": "WANT_TO_TRY" }`. I valori ammessi per `status` sono `WANT_TO_TRY` (vorrei provare) e `LIKED` (preferite). Una sigaretta può comparire una sola volta nelle liste di ciascun utente; per cambiare lista occorre rimuovere la voce esistente e salvarla con il nuovo stato.
 
 ## Swagger UI
 
