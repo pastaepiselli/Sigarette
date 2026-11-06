@@ -1,0 +1,47 @@
+<section
+  id="marche"
+  class="content-section"
+  aria-labelledby="brands-title"
+  [attr.aria-busy]="state().status === 'loading'"
+>
+  <div class="section-heading"><h2 id="brands-title">Marche</h2></div>
+  @let brands = state();
+  @switch (brands.status) {
+    @case ('idle') {
+      <p role="status">Preparazione delle marche…</p>
+    }
+    @case ('loading') {
+      <p class="sr-only" role="status">Caricamento delle marche…</p>
+      <div class="brand-grid" aria-hidden="true">
+        @for (item of skeletonItems; track item) {
+          <div class="skeleton skeleton-brand"></div>
+        }
+      </div>
+    }
+    @case ('error') {
+      <app-request-feedback
+        title="Le marche non sono disponibili"
+        [message]="brands.message"
+        [isError]="true"
+        retryLabel="Riprova marche"
+        (retry)="retry.emit()"
+      />
+    }
+    @case ('success') {
+      @if (preview().length) {
+        <ul class="brand-grid" aria-label="Marche in catalogo">
+          @for (brand of preview(); track brand.id) {
+            <li>
+              <span class="brand-name">{{ brand.name }}</span>
+            </li>
+          }
+        </ul>
+        <p class="section-footnote">
+          {{ preview().length }} di {{ brands.data.length | number }} marche
+        </p>
+      } @else {
+        <app-request-feedback title="Nessuna marca disponibile" />
+      }
+    }
+  }
+</section>

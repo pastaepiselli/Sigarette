@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+.ranking-controls {
+  display: flex;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+}
+.ranking-controls button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--color-muted);
+  border: 0;
+  font-size: 0.8rem;
+}
+.ranking-controls button[aria-pressed='true'] {
+  background: var(--color-text);
+  color: var(--color-background);
+}
+.ranking-controls button:hover:not([aria-pressed='true']) {
+  color: var(--color-text);
+  background: var(--color-raised);
+}
+.ranking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 2.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-block: 1.1rem;
+}
+.rank-position {
+  min-width: 1rem;
+  font: 0.85rem var(--font-mono);
+  color: var(--color-muted);
+}
+.rank-product {
+  min-width: 0;
+}
+.rank-product h3 {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.rank-product p {
+  margin-top: 0.25rem;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+}
+.rank-score {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  flex-shrink: 0;
+}
+.rank-score > span {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.rank-score small {
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  color: var(--color-muted);
+}
+.skeleton-rank {
+  height: 4rem;
+  margin-bottom: 0.75rem;
+}
+@media (max-width: 700px) {
+  .ranking-grid {
+    grid-template-columns: 1fr;
+  }
+}

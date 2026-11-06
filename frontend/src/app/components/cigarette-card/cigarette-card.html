@@ -1,0 +1,40 @@
+<article class="product-card">
+  <div class="product-cover">
+    @if (imageUrl(); as url) {
+      <img
+        [src]="url"
+        [alt]="cigarette().name"
+        loading="lazy"
+        decoding="async"
+        width="320"
+        height="400"
+        (error)="failedImageUrl.set(url)"
+      />
+    } @else {
+      <div class="cover-placeholder" aria-hidden="true">
+        <span>{{ cigarette().brand.name }}</span>
+      </div>
+      <span class="sr-only">Immagine non disponibile.</span>
+    }
+  </div>
+  <div class="product-info">
+    <h3>{{ cigarette().name }}</h3>
+    <div class="product-meta">
+      <span>{{ cigarette().price | currency: 'EUR' : 'symbol' : '1.2-2' }}</span>
+      @if (cigarette().ratingCount > 0) {
+        <span class="product-rating"
+          ><span aria-hidden="true">★</span><span class="sr-only">Voto medio:</span>
+          {{ cigarette().avgRating | number: '1.1-1' }}<span class="sr-only"> su 5</span></span
+        >
+      }
+    </div>
+    <p class="review-count">
+      @if (cigarette().ratingCount > 0) {
+        {{ cigarette().ratingCount | number }}
+        {{ cigarette().ratingCount === 1 ? 'recensione' : 'recensioni' }}
+      } @else {
+        Nessuna recensione
+      }
+    </p>
+  </div>
+</article>

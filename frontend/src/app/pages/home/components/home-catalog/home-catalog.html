@@ -1,0 +1,48 @@
+<section
+  id="esplora"
+  class="content-section"
+  aria-labelledby="explore-title"
+  [attr.aria-busy]="state().status === 'loading'"
+>
+  <div class="section-heading"><h2 id="explore-title">Catalogo</h2></div>
+  @let catalog = state();
+  @switch (catalog.status) {
+    @case ('idle') {
+      <p role="status">Preparazione del catalogo…</p>
+    }
+    @case ('loading') {
+      <p class="sr-only" role="status">Caricamento del catalogo…</p>
+      <div class="product-grid" aria-hidden="true">
+        @for (item of skeletonItems; track item) {
+          <div>
+            <div class="skeleton skeleton-cover"></div>
+            <div class="skeleton skeleton-line"></div>
+          </div>
+        }
+      </div>
+    }
+    @case ('error') {
+      <app-request-feedback
+        title="Il catalogo non è raggiungibile"
+        [message]="catalog.message"
+        [isError]="true"
+        retryLabel="Riprova"
+        (retry)="retry.emit()"
+      />
+    }
+    @case ('success') {
+      @if (preview().length) {
+        <div class="product-grid">
+          @for (cigarette of preview(); track cigarette.id) {
+            <app-cigarette-card [cigarette]="cigarette" />
+          }
+        </div>
+        <p class="section-footnote">
+          {{ preview().length }} voci su {{ catalog.data.length | number }} · Prezzi indicativi
+        </p>
+      } @else {
+        <app-request-feedback title="Nessuna sigaretta in catalogo" />
+      }
+    }
+  }
+</section>

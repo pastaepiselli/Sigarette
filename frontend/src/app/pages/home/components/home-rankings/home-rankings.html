@@ -1,0 +1,76 @@
+<section
+  id="classifiche"
+  class="content-section"
+  aria-labelledby="ranking-title"
+  [attr.aria-busy]="state().status === 'loading'"
+>
+  <div class="section-heading">
+    <h2 id="ranking-title">Classifiche</h2>
+    <div class="ranking-controls" role="group" aria-label="Ordina la classifica">
+      <button
+        type="button"
+        [attr.aria-pressed]="ranking() === 'rating'"
+        (click)="ranking.set('rating')"
+      >
+        Più votate
+      </button>
+      <button
+        type="button"
+        [attr.aria-pressed]="ranking() === 'reviews'"
+        (click)="ranking.set('reviews')"
+      >
+        Più recensite
+      </button>
+    </div>
+  </div>
+  <p class="sr-only" aria-live="polite">
+    {{
+      ranking() === 'rating'
+        ? 'Classifica per voto medio, dal più alto.'
+        : 'Classifica per numero di recensioni, dal più alto.'
+    }}
+  </p>
+  @switch (state().status) {
+    @case ('idle') {
+      <p role="status">Preparazione delle classifiche…</p>
+    }
+    @case ('loading') {
+      <p class="sr-only" role="status">Caricamento delle classifiche…</p>
+      <div class="ranking-grid" aria-hidden="true">
+        @for (item of skeletonItems; track item) {
+          <div class="skeleton skeleton-rank"></div>
+        }
+      </div>
+    }
+    @case ('error') {
+      <p class="section-note">Classifiche non disponibili. Riprova a caricare il catalogo.</p>
+    }
+    @case ('success') {
+      @if (ranked().length) {
+        <ol class="ranking-grid" aria-label="Classifica sigarette">
+          @for (cigarette of ranked(); track cigarette.id; let position = $index) {
+            <li class="ranking-row">
+              <span class="rank-position" aria-hidden="true">{{ position + 1 }}</span>
+              <div class="rank-product">
+                <h3>{{ cigarette.name }}</h3>
+                <p>{{ cigarette.brand.name }}</p>
+              </div>
+              <div class="rank-score">
+                <span
+                  ><span aria-hidden="true">★</span><span class="sr-only">Voto medio:</span>
+                  {{ cigarette.avgRating | number: '1.1-1'
+                  }}<span class="sr-only"> su 5</span></span
+                ><small
+                  >{{ cigarette.ratingCount | number }}
+                  {{ cigarette.ratingCount === 1 ? 'recensione' : 'recensioni' }}</small
+                >
+              </div>
+            </li>
+          }
+        </ol>
+      } @else {
+        <app-request-feedback title="Nessuna valutazione disponibile" />
+      }
+    }
+  }
+</section>

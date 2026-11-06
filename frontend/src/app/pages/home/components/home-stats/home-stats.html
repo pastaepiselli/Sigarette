@@ -1,0 +1,32 @@
+<dl class="archive-stats" aria-label="Statistiche del catalogo">
+  <div>
+    <dt>Sigarette</dt>
+    <dd>
+      @if (cigaretteCount() !== null) {
+        {{ cigaretteCount() | number }}
+      } @else {
+        <span aria-label="Dato non disponibile">—</span>
+      }
+    </dd>
+  </div>
+  <div>
+    <dt>Marche</dt>
+    <dd>
+      @if (brandCount() !== null) {
+        {{ brandCount() | number }}
+      } @else {
+        <span aria-label="Dato non disponibile">—</span>
+      }
+    </dd>
+  </div>
+  <div>
+    <dt>Recensioni</dt>
+    <dd>
+      @if (reviewCount() !== null) {
+        {{ reviewCount() | number }}
+      } @else {
+        <span aria-label="Dato non disponibile">—</span>
+      }
+    </dd>
+  </div>
+</dl>

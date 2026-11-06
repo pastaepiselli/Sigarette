@@ -1,0 +1,54 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.product-cover {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.product-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 1rem;
+}
+.cover-placeholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+.cover-placeholder span {
+  font: 400 clamp(1.2rem, 1.8vw, 1.6rem)/1.15 var(--font-display);
+  text-transform: uppercase;
+  text-align: center;
+  overflow-wrap: anywhere;
+  color: var(--color-muted);
+}
+.product-info {
+  padding-top: 0.75rem;
+}
+h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+.product-rating {
+  white-space: nowrap;
+}
+.review-count {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  margin-top: 0.3rem;
+}
