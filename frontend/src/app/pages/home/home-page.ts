@@ -23,6 +23,7 @@ import { HomeBrands } from './components/home-brands/home-brands';
   imports: [HomeHero, HomeStats, HomeCatalog, HomeRankings, HomeBrands],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './home-page.html',
+  styleUrl: './home-page.scss',
 })
 export class HomePage implements OnInit {
   private readonly cigaretteService = inject(CigaretteService);

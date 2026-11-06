@@ -1,11 +1,12 @@
-<div class="container">
-  <app-home-hero />
+<div class="container home-layout">
+  <app-home-hero class="home-intro" />
   <app-home-stats
+    class="home-metrics"
     [cigaretteCount]="cigaretteCount()"
     [brandCount]="brandCount()"
     [reviewCount]="reviewCount()"
   />
-  <app-home-catalog [state]="catalogState()" (retry)="loadCatalog()" />
-  <app-home-rankings [state]="catalogState()" />
-  <app-home-brands [state]="brandsState()" (retry)="loadBrands()" />
+  <app-home-catalog class="home-catalog" [state]="catalogState()" (retry)="loadCatalog()" />
+  <app-home-rankings class="home-rankings" [state]="catalogState()" />
+  <app-home-brands class="home-brands" [state]="brandsState()" (retry)="loadBrands()" />
 </div>

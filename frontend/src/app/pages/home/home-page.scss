@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  column-gap: 4rem;
+}
+.home-intro {
+  grid-column: 1;
+}
+.home-metrics {
+  grid-column: 2;
+  align-self: center;
+}
+.home-catalog {
+  grid-column: 1 / -1;
+  padding-top: 2rem;
+  padding-bottom: 2.75rem;
+  border-top: 1px solid var(--color-border);
+}
+.home-rankings {
+  min-width: 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+.home-brands {
+  min-width: 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+}
+@media (max-width: 760px) {
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+  .home-intro,
+  .home-metrics,
+  .home-catalog,
+  .home-rankings,
+  .home-brands {
+    grid-column: 1;
+  }
+  .home-metrics {
+    margin-bottom: 1.75rem;
+  }
+  .home-brands {
+    margin-top: 2rem;
+  }
+}

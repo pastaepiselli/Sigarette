@@ -12,7 +12,10 @@
       />
     } @else {
       <div class="cover-placeholder" aria-hidden="true">
-        <span>{{ cigarette().brand.name }}</span>
+        <span class="cover-initial">{{
+          cigarette().brand.name.trim().slice(0, 2).toUpperCase()
+        }}</span>
+        <span class="cover-brand">{{ cigarette().brand.name }}</span>
       </div>
       <span class="sr-only">Immagine non disponibile.</span>
     }

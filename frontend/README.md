@@ -2,7 +2,7 @@
 
 SPA Angular 22.2, standalone e zoneless, con TypeScript e template strict, Signals, routing lazy, HttpClient e SCSS. Lingua e formattazione: italiano. Nessun framework UI o font remoto.
 
-Identità visiva essenziale: fondo scuro neutro, testo chiaro, superfici grigie e bordi semplici. Nessuna texture, slogan o colore decorativo. Titoli condensati limitati al nome del sito e ai placeholder, senza immagini o font da scaricare.
+Restyle completo senza immagini decorative: nero, bianco e giallo acceso, tipografia sans-serif pesante, dati compatti e catalogo in righe. L'introduzione e le statistiche condividono la prima fascia desktop; catalogo a tutta larghezza, classifiche e marche affiancate sotto. Su mobile le sezioni sono in sequenza. Sono mantenuti i contenuti e i contratti API; le uniche immagini sono quelle dei prodotti, se disponibili, altrimenti si usano iniziali e marca. Nessuna texture, finta confezione o risorsa esterna.
 
 ## Avvio
 

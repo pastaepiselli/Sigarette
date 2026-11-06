@@ -3,25 +3,20 @@
 }
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 3rem;
 }
 .skeleton-cover {
-  aspect-ratio: 4 / 5;
-}
-.skeleton-line {
-  height: 0.75rem;
-  width: 80%;
+  height: 6rem;
   margin-top: 1rem;
 }
-@media (max-width: 1000px) {
-  .product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.skeleton-line {
+  height: 0.5rem;
+  width: 55%;
+  margin-block: 0.5rem 1rem;
 }
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem 1rem;
+    grid-template-columns: 1fr;
   }
 }

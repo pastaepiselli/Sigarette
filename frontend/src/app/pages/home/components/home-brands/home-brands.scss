@@ -2,28 +2,22 @@
   display: block;
 }
 .brand-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.2rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 li {
-  padding-block: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  padding-block: 0.6rem;
 }
 .brand-name {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  color: #cacac5;
   overflow-wrap: anywhere;
 }
 .skeleton-brand {
-  height: 3rem;
-  margin-bottom: 0.5rem;
-}
-@media (max-width: 640px) {
-  .brand-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  width: 7rem;
+  height: 2rem;
 }

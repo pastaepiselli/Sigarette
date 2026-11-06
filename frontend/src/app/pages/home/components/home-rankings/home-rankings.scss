@@ -1,31 +1,32 @@
 :host {
   display: block;
 }
+.section-heading {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 .ranking-controls {
   display: flex;
-  flex-shrink: 0;
-  border: 1px solid var(--color-border);
+  gap: 1rem;
 }
 .ranking-controls button {
   min-height: 2.75rem;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
   color: var(--color-muted);
-  border: 0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 .ranking-controls button[aria-pressed='true'] {
-  background: var(--color-text);
-  color: var(--color-background);
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
-.ranking-controls button:hover:not([aria-pressed='true']) {
+.ranking-controls button:hover {
   color: var(--color-text);
-  background: var(--color-raised);
 }
 .ranking-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 2.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -34,49 +35,50 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #2b2b2b;
   padding-block: 1.1rem;
 }
 .rank-position {
   min-width: 1rem;
-  font: 0.85rem var(--font-mono);
+  font: 0.9rem var(--font-mono);
   color: var(--color-muted);
+}
+.ranking-row:first-child .rank-position {
+  color: var(--color-accent);
 }
 .rank-product {
   min-width: 0;
 }
 .rank-product h3 {
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
   overflow-wrap: anywhere;
 }
 .rank-product p {
-  margin-top: 0.25rem;
+  margin-top: 0.2rem;
   color: var(--color-muted);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
 }
 .rank-score {
-  margin-left: auto;
   display: flex;
   flex-direction: column;
   text-align: right;
   flex-shrink: 0;
+  margin-left: auto;
 }
 .rank-score > span {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--color-accent);
   font-weight: 600;
+  white-space: nowrap;
 }
 .rank-score small {
-  margin-top: 0.25rem;
-  font-size: 0.7rem;
   color: var(--color-muted);
+  font-size: 0.6rem;
+  margin-top: 0.2rem;
 }
 .skeleton-rank {
-  height: 4rem;
+  height: 3rem;
   margin-bottom: 0.75rem;
-}
-@media (max-width: 700px) {
-  .ranking-grid {
-    grid-template-columns: 1fr;
-  }
 }
