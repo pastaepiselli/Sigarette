@@ -3,6 +3,7 @@ package com.cigarette.user_service.controller;
 import com.cigarette.user_service.dto.UserRequestDTO;
 import com.cigarette.user_service.dto.UserResponseDTO;
 import com.cigarette.user_service.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,7 +36,7 @@ public class UserController {
     @PutMapping(path = "/me")
     public ResponseEntity<UserResponseDTO> updateUser(
             @AuthenticationPrincipal Jwt jwt,
-            @RequestBody UserRequestDTO dto
+            @RequestBody @Valid UserRequestDTO dto
     )
     {
         UserResponseDTO user = userService.updateUser(jwt, dto);

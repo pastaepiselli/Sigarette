@@ -6,6 +6,7 @@ import com.cigarette.user_service.dto.UserResponseDTO;
 import com.cigarette.user_service.entity.User;
 import com.cigarette.user_service.mapper.UserMapper;
 import com.cigarette.user_service.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -36,13 +37,15 @@ public class UserService {
 
     public UserResponseDTO getCurrentUser(Jwt jwt){
         UUID uuid = UUID.fromString(jwt.getSubject());
-        return getUserById(uuid);
+        return userRepository.findById(uuid).map(UserMapper::mapToDTO).orElseThrow(
+                () -> new EntityNotFoundException("User not found")
+        );
     }
 
     public UserResponseDTO getUserByUsername(String username){
         return userRepository.findByUsername(username)
                 .map(UserMapper::mapToDTO).orElseThrow(
-                () -> new IllegalArgumentException("User con username: " + username + " non trovato")
+                () -> new EntityNotFoundException("User con username: " + username + " non trovato")
         );
     }
 
@@ -51,7 +54,7 @@ public class UserService {
         UUID uuid = UUID.fromString(jwt.getSubject());
 
         User user = userRepository.findById(uuid).orElseThrow(
-                () -> new IllegalArgumentException("User con uuid: " + uuid + " non trovato")
+                () -> new EntityNotFoundException("User con uuid: " + uuid + " non trovato")
         );
 
         user.setUsername(dto.username());

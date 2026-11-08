@@ -6,6 +6,7 @@ import com.cigarette.user_service.entity.SavedCigarette;
 import com.cigarette.user_service.mapper.SavedCigaretteMapper;
 import com.cigarette.user_service.repository.SavedCigaretteRepository;
 import com.cigarette.user_service.util.Status;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -66,7 +67,7 @@ public class SavedCigaretteService {
     public void deleteSavedCigarette(Long idSavedCigarette, Jwt jwt){
         UUID idUser = UUID.fromString(jwt.getSubject());
         SavedCigarette savedCigarette = savedCigaretteRepository.findByIdAndIdUser(idSavedCigarette, idUser).orElseThrow(
-                () -> new IllegalArgumentException("Saved cig with id: " + idSavedCigarette + " not found for this user")
+                () -> new EntityNotFoundException("Saved cig with id: " + idSavedCigarette + " not found for this user")
         );
         savedCigaretteRepository.delete(savedCigarette);
     }
