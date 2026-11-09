@@ -3,6 +3,7 @@ package com.review.review_service.controller;
 import com.review.review_service.dto.ReviewRequestDTO;
 import com.review.review_service.dto.ReviewResponseDTO;
 import com.review.review_service.service.ReviewService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +27,7 @@ public class ReviewController {
 
     @PostMapping(path = "")
     public ResponseEntity<ReviewResponseDTO> createReview(
-            @RequestBody ReviewRequestDTO dto,
+            @RequestBody @Valid ReviewRequestDTO dto,
             @AuthenticationPrincipal Jwt jwt) {
         ReviewResponseDTO review = reviewService.createReview(dto, jwt);
         return ResponseEntity.ok(review);
@@ -35,7 +36,7 @@ public class ReviewController {
     @PutMapping(path = "/{idReview}")
     public ResponseEntity<ReviewResponseDTO> updateReview(
             @PathVariable Long idReview,
-            @RequestBody ReviewRequestDTO dto,
+            @RequestBody @Valid ReviewRequestDTO dto,
             @AuthenticationPrincipal Jwt jwt
     )
     {

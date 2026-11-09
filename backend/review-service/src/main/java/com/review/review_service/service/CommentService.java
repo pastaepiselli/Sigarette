@@ -7,6 +7,7 @@ import com.review.review_service.entity.Review;
 import com.review.review_service.mapper.CommentMapper;
 import com.review.review_service.repository.CommentRepository;
 import com.review.review_service.repository.ReviewRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class CommentService {
         return commentRepository.findByIdAndIdReview(idReview, id)
                 .map(CommentMapper::mapToDTO)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Comment with id: " + id + " not found")
+                        () -> new EntityNotFoundException("Comment with id: " + id + " not found")
                 );
     }
 
@@ -42,7 +43,7 @@ public class CommentService {
         Comment comment = CommentMapper.mapToEntity(dto);
         Review review = reviewRepository.findById(idReview).
                 orElseThrow(
-                        () -> new IllegalArgumentException("Review con id: " + idReview + " non trovata")
+                        () -> new EntityNotFoundException("Review con id: " + idReview + " non trovata")
                 );
         UUID uuid = UUID.fromString(jwt.getSubject());
         comment.setReview(review);
@@ -54,7 +55,7 @@ public class CommentService {
     public CommentResponseDTO updateComment(Long idReview, Long idComment, CommentRequestDTO dto, Jwt jwt){
         UUID idUser = UUID.fromString(jwt.getSubject());
         Comment comment = commentRepository.findMyCommentById(idReview, idComment, idUser).orElseThrow(
-                () -> new IllegalArgumentException("Comment with id: " + idComment + " not found")
+                () -> new EntityNotFoundException("Comment with id: " + idComment + " not found")
         );
 
         comment.setDescription(dto.description());
@@ -68,7 +69,7 @@ public class CommentService {
 
         UUID idUser = UUID.fromString(jwt.getSubject());
         Comment comment = commentRepository.findMyCommentById(idReview, idComment, idUser).orElseThrow(
-                () -> new IllegalArgumentException("Comment with id: " + idComment + " not found")
+                () -> new EntityNotFoundException("Comment with id: " + idComment + " not found")
         );
         commentRepository.delete(comment);
     }

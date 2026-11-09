@@ -3,6 +3,7 @@ package com.review.review_service.controller;
 import com.review.review_service.dto.CommentRequestDTO;
 import com.review.review_service.dto.CommentResponseDTO;
 import com.review.review_service.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CommentController {
     @PostMapping(path = "")
     public ResponseEntity<CommentResponseDTO> createComment(
             @PathVariable Long idReview,
-            @RequestBody CommentRequestDTO dto,
+            @RequestBody @Valid CommentRequestDTO dto,
             @AuthenticationPrincipal Jwt jwt)
     {
         CommentResponseDTO comment = commentService.createComment(idReview, dto, jwt);
@@ -48,7 +49,7 @@ public class CommentController {
     public ResponseEntity<CommentResponseDTO> updateComment(
             @PathVariable Long idReview,
             @PathVariable Long idComment,
-            @RequestBody CommentRequestDTO dto,
+            @RequestBody @Valid CommentRequestDTO dto,
             @AuthenticationPrincipal Jwt jwt){
         CommentResponseDTO comment = commentService.updateComment(idReview, idComment, dto, jwt);
         return ResponseEntity.ok(comment);

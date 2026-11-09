@@ -7,6 +7,7 @@ import com.review.review_service.events.ReviewEvent;
 import com.review.review_service.mapper.ReviewMapper;
 import com.review.review_service.repository.ReviewRepository;
 import com.review.review_service.util.ReviewEventType;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
@@ -34,7 +35,7 @@ public class ReviewService {
         return reviewRepository.findById(id)
                 .map(ReviewMapper::mapToDTO)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Review with id: " + id + " not found")
+                        () -> new EntityNotFoundException("Review with id: " + id + " not found")
                 );
     }
 
@@ -59,7 +60,7 @@ public class ReviewService {
         // devo trovare la mia review
         UUID uuid = UUID.fromString(jwt.getSubject());
         Review review = reviewRepository.findMyReviewWithId(idReview, uuid).orElseThrow(
-                () -> new IllegalArgumentException("Review with id: " + idReview + " of this user not found")
+                () -> new EntityNotFoundException("Review with id: " + idReview + " of this user not found")
         );
 
         Float oldRating = review.getRating();
@@ -81,7 +82,7 @@ public class ReviewService {
     public void deleteReview(Long idReview, Jwt jwt){
         UUID idUser = UUID.fromString(jwt.getSubject());
         Review review = reviewRepository.findMyReviewWithId(idReview, idUser).orElseThrow(
-                () -> new IllegalArgumentException("Review with id: " + idReview + " of this user not found")
+                () -> new EntityNotFoundException("Review with id: " + idReview + " of this user not found")
         );
 
         ReviewEvent reviewEvent =  new ReviewEvent(
